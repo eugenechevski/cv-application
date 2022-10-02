@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import WebViewer from "@pdftron/pdfjs-express-viewer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   solid,
@@ -9,59 +10,68 @@ import CardContainer from "./components/CardContainer";
 import Modal from "./components/Modal";
 import "./styles/App.css";
 
-class App extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
+const App = () => {
+  const viewer = useRef();
+  const instance = useRef();
+  const viewerElement = (<div className="webviewer" ref={viewer}></div>);
+  const [modalContent, updateModalContent] = useState('Creative');
+  const [cardsData] = useState([
+    {
+      title: "Simple",
+      iconObj: (
+        <FontAwesomeIcon
+          className="text-9xl"
+          icon={solid("thumbs-up")}
+        ></FontAwesomeIcon>
+      ),
+    },
+    {
+      title: "Professional",
+      iconObj: (
+        <FontAwesomeIcon
+          className="text-9xl"
+          icon={solid("user-tie")}
+        ></FontAwesomeIcon>
+      ),
+    },
+    {
+      title: "Creative",
+      iconObj: (
+        <FontAwesomeIcon
+          className="text-9xl"
+          icon={solid("lightbulb")}
+        ></FontAwesomeIcon>
+      ),
+    },
+  ],);
 
-    this.state = {
-      modalContent: '',
-    };
-  }
+  useEffect(() => {
+    if ((viewer.current as Element).childNodes.length == 0) {
+      WebViewer(
+        {
+          path: "webviewer/lib",
+          initialDoc: `pdf/${modalContent}.pdf`,
+          licenseKey: "wBPhy81AfmUzlGlzywae",
+        },
+        viewer.current
+      ).then((inst) => {
+        instance.current = inst;
+      });
+    }
+  }, []);
 
-  changeModalContent = (content: any) => { 
-    this.setState({
-      modalContent: content,
-    });
-  }
+  useEffect(() => {
+    if (instance.current) {
+      (instance.current as any).loadDocument(`pdf/${modalContent}`);
+    }
+  }, [modalContent]);
 
-  render(): React.ReactNode {
-    const cardsData = [
-      {
-        title: "Simple",
-        iconObj: (
-          <FontAwesomeIcon
-            className="text-9xl"
-            icon={solid("thumbs-up")}
-          ></FontAwesomeIcon>
-        ),
-      },
-      {
-        title: "Professional",
-        iconObj: (
-          <FontAwesomeIcon
-            className="text-9xl"
-            icon={solid("user-tie")}
-          ></FontAwesomeIcon>
-        ),
-      },
-      {
-        title: "Creative",
-        iconObj: (
-          <FontAwesomeIcon
-            className="text-9xl"
-            icon={solid("lightbulb")}
-          ></FontAwesomeIcon>
-        ),
-      },
-    ];
-
-    return (
-      <div className="h-full w-full flex justify-center items-center">
-        <CardContainer onInspect={this.changeModalContent} cardsData={cardsData}></CardContainer>
-        <Modal modalContent={this.state.modalContent}></Modal>
-      </div>
-    );
-  }
+  return (
+    <div className="h-full w-full flex justify-center items-center">
+      <CardContainer onInspect={updateModalContent} cardsData={cardsData}></CardContainer>
+      <Modal contentContainer={viewerElement}></Modal>
+    </div>
+  );
 }
 
 export default App;

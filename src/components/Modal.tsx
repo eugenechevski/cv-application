@@ -1,7 +1,7 @@
-import { ReactElement } from "react";
+import { useRef } from "react";
 
-export default function Modal(props: any): ReactElement<any, any> {
-  const { modalContent } = props;
+const Modal = (props: any) => {
+  const { contentContainer } = props;
 
   return (
     <div
@@ -17,7 +17,7 @@ export default function Modal(props: any): ReactElement<any, any> {
               className="text-xl font-medium leading-normal text-gray-800"
               id="inspectionModalLabel"
             >
-                Inspection Window
+              Inspection Window
             </h5>
             <button
               type="button"
@@ -27,15 +27,7 @@ export default function Modal(props: any): ReactElement<any, any> {
             ></button>
           </div>
           <div className="modal-body relative p-4">
-            { modalContent }
-            <p>
-              This is some placeholder content to show the scrolling behavior
-              for modals. We use repeated line breaks to demonstrate how content
-              can exceed minimum inner height, thereby showing inner scrolling.
-              When content becomes longer than the predefined max-height of
-              modal, content will be cropped and scrollable within the modal.
-            </p>
-            <p>This content should appear at the bottom after you scroll.</p>
+            {contentContainer}
           </div>
           <div className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
             <button
@@ -50,4 +42,6 @@ export default function Modal(props: any): ReactElement<any, any> {
       </div>
     </div>
   );
-}
+};
+
+export default Modal;
