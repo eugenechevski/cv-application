@@ -1,7 +1,12 @@
-import { useRef } from "react";
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css'
+import { zoomPlugin } from '@react-pdf-viewer/zoom';
 
 const Modal = (props: any) => {
-  const { contentContainer } = props;
+  const { fileName } = props;
+  const pdfFile = require(`src/assets/pdf/${fileName}.pdf`)
+  const zoomPluginInstance = zoomPlugin();
+  const { ZoomIn, ZoomOut } = zoomPluginInstance;
 
   return (
     <div
@@ -27,7 +32,16 @@ const Modal = (props: any) => {
             ></button>
           </div>
           <div className="modal-body relative p-4">
-            {contentContainer}
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.js">
+              <div className='flex'>
+                <ZoomIn></ZoomIn>
+                <ZoomOut></ZoomOut>
+              </div>
+              <Viewer 
+                fileUrl={pdfFile}
+                plugins={[zoomPluginInstance]}
+              />
+            </Worker>
           </div>
           <div className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
             <button
