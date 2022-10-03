@@ -5,7 +5,11 @@ module.exports = {
 	  "./src/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'Roboto': ['"Roboto Mono"', 'monospace'],
+      },
+    },
   },
   plugins: [
 	  require('tw-elements/dist/plugin')
