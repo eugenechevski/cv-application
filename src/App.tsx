@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import LandingPage from "./components/LandingPage";
-import SelectionMenu from "./components/SelectionMenu";
-import "./styles/App.css";
+import LandingPage from "Components/LandingPage";
+import SelectionMenu from "Components/SelectionMenu";
+import "src/styles/App.css";
 
 const App = () => {
-  const landingPage = (<LandingPage updateScene={() => updateScene(selectionMenu)}></LandingPage>)
-  const selectionMenu = (<SelectionMenu></SelectionMenu>);
+  const landingPage = (
+    <LandingPage updateScene={() => updateScene(selectionMenu)}></LandingPage>
+  );
+  const selectionMenu = <SelectionMenu></SelectionMenu>;
   const [currentScene, updateScene] = useState(landingPage);
 
   return (

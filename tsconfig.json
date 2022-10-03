@@ -7,6 +7,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "noImplicitAny": false,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -19,9 +20,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "Components/*": ["src/components/*"],
+    }
   },
   "include": [
     "src"
-  ]
+  ],
 }

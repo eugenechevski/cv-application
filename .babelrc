@@ -3,7 +3,7 @@
         ["module-resolver", {
             "root": ["./"],
             "alias": {
-                "Components": "./src/components"
+                "Components": "src/components"
             }
         }]
     ]

@@ -7,13 +7,13 @@ const LandingPage = (props: any) => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    requestQuote().then((response) => {
-      if (isLoading && response.originator) {
+    requestQuote().then((response: any) => {
+      if (randomQuote === '' && response?.originator) {
         setQuote(`"${response.content}" - ${response.originator.name}`);
       }
     })
     .catch(err => console.error(err));
-  }, []);
+  }, [randomQuote]);
 
   useEffect(() => {
     if (randomQuote !== '') {
