@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
 import Card from "./Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -37,52 +37,49 @@ const cardsData = [
   },
 ];
 
-const CardContainer = (props: any) => {
-  const { onInspect } = props;
+const SelectionContext = createContext(['', (newTitle: string) => {}]);
+
+const CardContainer = () => {
   const [selectedCard, setSelectedCard] = useState("");
   const cardsComps = {
     Simple: (
       <Card
-        onInspect={onInspect}
-        select={setSelectedCard}
         data={cardsData[0]}
       ></Card>
     ),
     Professional: (
       <Card
-        onInspect={onInspect}
-        select={setSelectedCard}
         data={cardsData[1]}
       ></Card>
     ),
     Creative: (
       <Card
-        onInspect={onInspect}
-        select={setSelectedCard}
         data={cardsData[2]}
       ></Card>
     ),
   };
 
   return (
-    <div
-      onDoubleClick={() => setSelectedCard("")}
-      className="container flex flex-col lg:flex-row items-center justify-evenly gap-5 w-full h-full"
-    >
-      {cardsComps[selectedCard] ? (
-        <div className="flex flex-col justify-center items-center gap-5">
-            {cardsComps[selectedCard]}
-            <button className="bg-purple-500 text-white p-3">Choose As Template</button>
-        </div>
-      ) : (
-        <>
-          {cardsComps["Simple"]}
-          {cardsComps["Professional"]}
-          {cardsComps["Creative"]}
-        </>
-      )}
-    </div>
+    <SelectionContext.Provider value={[selectedCard, setSelectedCard]}>
+      <div
+        onDoubleClick={() => setSelectedCard("")}
+        className="container flex flex-col lg:flex-row items-center justify-evenly gap-5 w-full h-full"
+      >
+        {cardsComps[selectedCard] ? (
+          <div className="flex flex-col justify-center items-center gap-5">
+                {cardsComps[selectedCard]}
+              <button className="purple-btn">Choose As Template</button>
+          </div>
+        ) : (
+          <>
+            {cardsComps["Simple"]}
+            {cardsComps["Professional"]}
+            {cardsComps["Creative"]}
+          </>
+        )}
+      </div>
+    </SelectionContext.Provider>
   );
 };
 
-export default CardContainer;
+export { CardContainer, SelectionContext };

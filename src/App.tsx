@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LandingPage from "Components/LandingPage";
-import SelectionMenu from "Components/SelectionMenu";
+import { SelectionMenu } from "Components/SelectionMenu";
 import "src/styles/App.css";
 
 const App = () => {

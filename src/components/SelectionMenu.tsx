@@ -1,16 +1,20 @@
-import CardContainer from "Components/selection-menu/CardContainer";
+import { CardContainer } from "Components/selection-menu/CardContainer";
 import Modal from "Components/selection-menu/Modal";
-import { useState } from "react";
+import { useState, createContext } from "react";
+
+const InspectContext = createContext((fileName: string) => {});
 
 const SelectionMenu = () => {
   const [fileName, updateFileName] = useState("Creative");
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
-      <CardContainer onInspect={updateFileName}></CardContainer>
-      <Modal fileName={fileName}></Modal>
-    </div>
+    <InspectContext.Provider value={updateFileName}>
+      <div className="h-full w-full flex justify-center items-center">
+        <CardContainer></CardContainer>
+        <Modal fileName={fileName}></Modal>
+      </div>
+    </InspectContext.Provider>
   );
 };
 
-export default SelectionMenu;
+export { SelectionMenu, InspectContext };
