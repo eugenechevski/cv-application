@@ -1,5 +1,5 @@
-import CardContainer from "./CardContainer";
-import Modal from "./Modal";
+import CardContainer from "Components/selection-menu/CardContainer";
+import Modal from "Components/selection-menu/Modal";
 import { useState } from "react";
 
 const SelectionMenu = () => {

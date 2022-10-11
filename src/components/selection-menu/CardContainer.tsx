@@ -76,7 +76,7 @@ const CardContainer = (props: any) => {
         </div>
       ) : (
         <>
-          {cardsComps["Creative"]}
+          {cardsComps["Simple"]}
           {cardsComps["Professional"]}
           {cardsComps["Creative"]}
         </>

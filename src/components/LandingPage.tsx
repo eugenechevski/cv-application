@@ -13,7 +13,7 @@ const LandingPage = (props: any) => {
       }
     })
     .catch(err => console.error(err));
-  }, [randomQuote]);
+  }, []);
 
   useEffect(() => {
     if (randomQuote !== '') {
