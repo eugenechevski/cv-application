@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { SelectionContext } from "./CardContainer";
 import { InspectContext } from "Components/SelectionMenu";
 
@@ -20,10 +20,10 @@ const Card = (props: any) => {
         (selectedCard as string) !== '' ? (
           <label
             onClick={updateFileName.bind(null, title)}
-            htmlFor="my-modal-5"
+            htmlFor="my-modal-3"
             className="purple-btn"
           >
-            Inspect
+            Preview
           </label>
         ) : (
           <></>
