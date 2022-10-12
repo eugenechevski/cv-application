@@ -15,7 +15,7 @@ const App = () => {
   const [currentScene, updateScene] = useState(landingPage);
 
   return (
-    <div className="h-full w-full flex justify-center items-center text-black">
+    <div className="h-full w-full flex justify-center items-center" data-theme="dark">
       {currentScene}
     </div>
   );

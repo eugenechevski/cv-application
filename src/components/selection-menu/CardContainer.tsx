@@ -68,8 +68,8 @@ const CardContainer = (props: any) => {
       >
         {cardsComps[selectedCard] ? (
           <div className="flex flex-col justify-center items-center gap-5">
-                {cardsComps[selectedCard]}
-              <button onClick={updateScene} className="purple-btn">Choose As Template</button>
+              {cardsComps[selectedCard]}
+              <button onClick={updateScene} className="btn btn-primary">Choose As Template</button>
           </div>
         ) : (
           <>

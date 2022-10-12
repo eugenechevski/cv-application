@@ -26,10 +26,14 @@ const EditPage = (props: any) => {
   return (
     <div className="pagination">
       <div className="btn-group">
-        <button className="btn btn-xs">1</button>
-        <button className="btn btn-xs btn-active">2</button>
-        <button className="btn btn-xs">3</button>
-        <button className="btn btn-xs">4</button>
+        <button className="btn btn-active">Name</button>
+        <button className="btn">Title</button>
+        <button className="btn">Skills</button>
+        <button className="btn">Experience</button>
+        <button className="btn">Education</button>
+        <button className="btn">Awards</button>
+        <button className="btn">Projects</button>
+        <button className="btn">Languages</button>
       </div>
     </div>
   );

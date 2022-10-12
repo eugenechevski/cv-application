@@ -27,7 +27,7 @@ const LandingPage = (props: any) => {
         <span>{isLoading ? "Fetching a random quote..." : randomQuote}</span>
       </div>
       <button
-        className="bg-purple-500 text-xl text-white p-2 px-12"
+        className="btn btn-primary p-2 px-12"
         onClick={() => {
           updateScene();
         }}

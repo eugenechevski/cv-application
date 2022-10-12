@@ -10,7 +10,7 @@ const Card = (props: any) => {
   return (
     <div
       onClick={(setSelectedCard as (newTitle: string) => {}).bind(null, title)}
-      className="bg-white rounded-2xl shadow-xl flex flex-col items-center gap-4 p-2 h-[30vh] w-[30vh]"
+      className="bg-white rounded-2xl shadow-xl flex flex-col items-center gap-4 p-2 h-[30vh] w-[30vh] text-black"
     >
       <h1 className="font-bold text-center">{title}</h1>
       <div className="h-[20vh] w-3/4 lg:pt-3 rounded-lg text-center">
@@ -21,7 +21,7 @@ const Card = (props: any) => {
           <label
             onClick={updateFileName.bind(null, title)}
             htmlFor="my-modal-3"
-            className="purple-btn"
+            className="btn btn-primary"
           >
             Preview
           </label>
