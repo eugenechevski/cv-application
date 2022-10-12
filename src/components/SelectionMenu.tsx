@@ -4,13 +4,14 @@ import { useState, createContext } from "react";
 
 const InspectContext = createContext((fileName: string) => {});
 
-const SelectionMenu = () => {
+const SelectionMenu = (props: any) => {
   const [fileName, updateFileName] = useState("Creative");
+  const { updateScene } = props;
 
   return (
     <InspectContext.Provider value={updateFileName}>
       <div className="h-full w-full flex justify-center items-center">
-        <CardContainer></CardContainer>
+        <CardContainer updateScene={updateScene}></CardContainer>
         <Modal fileName={fileName}></Modal>
       </div>
     </InspectContext.Provider>

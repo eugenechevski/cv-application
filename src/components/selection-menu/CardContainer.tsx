@@ -39,7 +39,8 @@ const cardsData = [
 
 const SelectionContext = createContext(['', (newTitle: string) => {}]);
 
-const CardContainer = () => {
+const CardContainer = (props: any) => {
+  const { updateScene } = props;
   const [selectedCard, setSelectedCard] = useState("");
   const cardsComps = {
     Simple: (
@@ -68,7 +69,7 @@ const CardContainer = () => {
         {cardsComps[selectedCard] ? (
           <div className="flex flex-col justify-center items-center gap-5">
                 {cardsComps[selectedCard]}
-              <button className="purple-btn">Choose As Template</button>
+              <button onClick={updateScene} className="purple-btn">Choose As Template</button>
           </div>
         ) : (
           <>
