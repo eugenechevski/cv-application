@@ -3,8 +3,6 @@ import Card from "./Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   solid,
-  regular,
-  icon,
 } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const cardsData = [
@@ -37,39 +35,47 @@ const cardsData = [
   },
 ];
 
-const SelectionContext = createContext(['', (newTitle: string) => {}]);
+const SelectionContext = createContext((newTitle: string) => {});
 
 const CardContainer = (props: any) => {
-  const { updateScene } = props;
+  const { updateScene, updateFileName } = props;
   const [selectedCard, setSelectedCard] = useState("");
+  const [wasPreviewed, setAsPreviewed] = useState(false);
   const cardsComps = {
-    Simple: (
-      <Card
-        data={cardsData[0]}
-      ></Card>
-    ),
-    Professional: (
-      <Card
-        data={cardsData[1]}
-      ></Card>
-    ),
-    Creative: (
-      <Card
-        data={cardsData[2]}
-      ></Card>
-    ),
+    Simple: <Card data={cardsData[0]}></Card>,
+    Professional: <Card data={cardsData[1]}></Card>,
+    Creative: <Card data={cardsData[2]}></Card>,
   };
 
   return (
-    <SelectionContext.Provider value={[selectedCard, setSelectedCard]}>
+    <SelectionContext.Provider value={setSelectedCard}>
       <div
-        onDoubleClick={() => setSelectedCard("")}
+        onDoubleClick={() => {
+            setSelectedCard("");
+            setAsPreviewed(false);
+          }
+        }
         className="container flex flex-col lg:flex-row items-center justify-evenly gap-5 w-full h-full"
       >
         {cardsComps[selectedCard] ? (
-          <div className="flex flex-col justify-center items-center gap-5">
-              {cardsComps[selectedCard]}
-              <button onClick={updateScene} className="btn btn-primary">Choose As Template</button>
+          <div className="flex flex-col justify-center items-center gap-3">
+            {cardsComps[selectedCard]}
+            {wasPreviewed ? (
+              <button onClick={updateScene} className="btn btn-primary">
+                Choose As Template
+              </button>
+            ) : (
+              <label
+                onClick={() => {
+                  updateFileName(selectedCard);
+                  setTimeout(setAsPreviewed.bind(null, true), 10);
+                }}
+                htmlFor="my-modal-3"
+                className="btn btn-primary"
+              >
+                Preview
+              </label>
+            )}
           </div>
         ) : (
           <>

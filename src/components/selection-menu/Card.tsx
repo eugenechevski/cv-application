@@ -1,34 +1,19 @@
 import { useContext } from "react";
 import { SelectionContext } from "./CardContainer";
-import { InspectContext } from "Components/SelectionMenu";
 
 const Card = (props: any) => {
-  const updateFileName = useContext(InspectContext);
-  const [selectedCard, setSelectedCard] = useContext(SelectionContext);
+  const setSelectedCard = useContext(SelectionContext);
   const { title, iconObj } = props.data;
 
   return (
     <div
-      onClick={(setSelectedCard as (newTitle: string) => {}).bind(null, title)}
-      className="bg-white rounded-2xl shadow-xl flex flex-col items-center gap-4 p-2 h-[30vh] w-[30vh] text-black"
+      onClick={setSelectedCard.bind(null, title)}
+      className="bg-white rounded-2xl shadow-xl flex flex-col items-center gap-4 p-2 h-[30vh] w-[30vh] text-black hover:bg-neutral-content"
     >
       <h1 className="font-bold text-center">{title}</h1>
-      <div className="h-[20vh] w-3/4 lg:pt-3 rounded-lg text-center">
+      <div className="h-[20vh] w-3/4 lg:pt-3 rounded-lg text-center flex justify-center items-center">
         {iconObj}
       </div>
-      {
-        (selectedCard as string) !== '' ? (
-          <label
-            onClick={updateFileName.bind(null, title)}
-            htmlFor="my-modal-3"
-            className="btn btn-primary"
-          >
-            Preview
-          </label>
-        ) : (
-          <></>
-        )
-      }
     </div>
   );
 };

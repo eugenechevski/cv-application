@@ -1,6 +1,6 @@
-import { useState, createContext } from "react";
+import { useState } from "react";
 import LandingPage from "Components/LandingPage";
-import { SelectionMenu } from "Components/SelectionMenu";
+import SelectionMenu from "Components/SelectionMenu";
 import EditPage from "Components/EditPage";
 import "src/styles/App.css";
 
