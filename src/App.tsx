@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, createContext } from "react";
 import LandingPage from "Components/LandingPage";
 import SelectionMenu from "Components/SelectionMenu";
 import EditPage from "Components/EditPage";
 import "src/styles/App.css";
 
+const TemplateNameContext = createContext(['',  (templateName: string) => {}]);
+
 const App = () => {
-  const editPage = <EditPage></EditPage>;
+  const [templateName, updateTemplateName] = useState('Simple');
+
+  const editPage = <EditPage templateName={templateName}></EditPage>;
   const landingPage = (
     <LandingPage updateScene={() => updateScene(selectionMenu)}></LandingPage>
   );
@@ -15,10 +19,12 @@ const App = () => {
   const [currentScene, updateScene] = useState(landingPage);
 
   return (
-    <div className="h-full w-full flex justify-center items-center" data-theme="dark">
-      {currentScene}
-    </div>
+    <TemplateNameContext.Provider value={[templateName, updateTemplateName]}>
+      <div className="h-full w-full flex justify-center items-center" data-theme="dark">
+        {currentScene}
+      </div>
+    </TemplateNameContext.Provider>
   );
 };
 
-export default App;
+export { App, TemplateNameContext };

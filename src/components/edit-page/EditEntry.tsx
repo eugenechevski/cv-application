@@ -1,4 +1,6 @@
 const EditEntry = (props: any) => {
+    const {field} = props;
+
     return (
         <></>
     );

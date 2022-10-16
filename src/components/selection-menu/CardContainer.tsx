@@ -1,9 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 import Card from "./Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   solid,
 } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { TemplateNameContext } from "src/App";
 
 const cardsData = [
   {
@@ -38,9 +39,11 @@ const cardsData = [
 const SelectionContext = createContext((newTitle: string) => {});
 
 const CardContainer = (props: any) => {
-  const { updateScene, updateFileName } = props;
+  const { updateScene } = props;
   const [selectedCard, setSelectedCard] = useState("");
   const [wasPreviewed, setAsPreviewed] = useState(false);
+  const [templateName, updateTemplateName] = useContext(TemplateNameContext);
+
   const cardsComps = {
     Simple: <Card data={cardsData[0]}></Card>,
     Professional: <Card data={cardsData[1]}></Card>,
@@ -67,7 +70,7 @@ const CardContainer = (props: any) => {
             ) : (
               <label
                 onClick={() => {
-                  updateFileName(selectedCard);
+                  (updateTemplateName as (templateName: string ) => {})(selectedCard);
                   setTimeout(setAsPreviewed.bind(null, true), 10);
                 }}
                 htmlFor="my-modal-3"

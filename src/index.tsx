@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'tw-elements';
 import './index.css';
-import App from './App';
+import { App } from './App';
 
 document.querySelector('body')?.classList.add('h-[100vh]', 'font-Roboto');
 document.querySelector('#root')?.classList.add('w-full', 'h-full');

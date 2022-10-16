@@ -1,9 +1,11 @@
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+import { useContext } from "react";
+import { TemplateNameContext } from "src/App";
 
-const Modal = (props: any) => {
-  const { fileName } = props;
-  const pdfFile = require(`src/assets/pdf/${fileName}.pdf`);
+const Modal = () => {
+  const [templateName, updateTemplateName] = useContext(TemplateNameContext);
+  const pdfFile = require(`src/assets/pdf/${templateName}.pdf`);
 
   return (
     <>
