@@ -70,7 +70,7 @@ const CardContainer = (props: any) => {
             ) : (
               <label
                 onClick={() => {
-                  (updateTemplateName as (templateName: string ) => {})(selectedCard);
+                  (updateTemplateName as (any) => {})(selectedCard);
                   setTimeout(setAsPreviewed.bind(null, true), 10);
                 }}
                 htmlFor="my-modal-3"
