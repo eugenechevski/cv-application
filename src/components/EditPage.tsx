@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect, useContext, useRef } from "react";
-import EditEntry from "Components/edit-page/EditEntry";
+import EditField from "Components/edit-page/EditField";
 import Input from "./edit-page/Input";
 import List from "./edit-page/List";
 import Table from "./edit-page/Table";
@@ -14,8 +14,9 @@ const EditPage = () => {
   const [templateName, setTemplateName] = useContext(TemplateNameContext);
 
   /**
-   * Defines state of associated fields that can be edited.
+   * States of associated fields that can be edited.
    */
+
   const [name, updateName] = useState("John Doe");
   const [title, updateTitle] = useState("Lorem ipsum dolor sit amet");
   const [skills, updateSkills] = useState(
@@ -55,125 +56,144 @@ const EditPage = () => {
     new Set(["Language 1", "Language 2", "Language 3"])
   );
 
-  // TODO
   /**
-   * Defines sub-components for editing associated fields.
+   * Contains an object with the name of an editing field as a key and 
+   * an associated component as a value.
    */
-  const entryComponentsMap = useRef(null);
+  const editFieldComponentsMap = useRef(null);
   
-  if (entryComponentsMap.current === null) {
-    entryComponentsMap.current = {
+  if (editFieldComponentsMap.current === null) {
+    editFieldComponentsMap.current = {
       Name: (
-        <EditEntry
+        <EditField
           title={"Name"}
           field={<Input state={name} updateState={updateName}></Input>}
-        ></EditEntry>
+        ></EditField>
       ),
       Title: (
-        <EditEntry
+        <EditField
           title={"Title"}
           field={<Input state={title} updateState={updateTitle}></Input>}
-        ></EditEntry>
+        ></EditField>
       ),
       Skills: (
-        <EditEntry
+        <EditField
           title={"Skills"}
           field={<List state={skills} updateState={updateSkills}></List>}
-        ></EditEntry>
+        ></EditField>
       ),
       Experience: (
-        <EditEntry
+        <EditField
           title={"Experience"}
           field={
             <Table state={experience} updateState={updateExperience}></Table>
           }
-        ></EditEntry>
+        ></EditField>
       ),
       Education: (
-        <EditEntry
+        <EditField
           title={"Education"}
           field={
             <Table state={education} updateState={updateEducation}></Table>
           }
-        ></EditEntry>
+        ></EditField>
       ),
       Awards: (
-        <EditEntry
+        <EditField
           title={"Awards"}
           field={<List state={awards} updateState={updateAwards}></List>}
-        ></EditEntry>
+        ></EditField>
       ),
     };
 
     if (templateName === "Simple") {
-      Object.assign(entryComponentsMap.current, {
+      Object.assign(editFieldComponentsMap.current, {
         Projects: (
-          <EditEntry
+          <EditField
             title={"Projects"}
             field={<List state={projects} updateState={updateProjects}></List>}
-          ></EditEntry>
+          ></EditField>
         ),
         Languages: (
-          <EditEntry
+          <EditField
             title={"Languages"}
             field={
               <List state={languages} updateState={updateLanguages}></List>
             }
-          ></EditEntry>
+          ></EditField>
         ),
       });
     }
   }
 
-  const entryComponentsList = useRef(Object.values(entryComponentsMap.current));
-  const entryComponentOrderMap = useRef(null);
+  /**
+   * An array of all field-editing components.
+   */
+  const editFieldComponentsList = useRef(Object.values(editFieldComponentsMap.current));
+  /**
+   * An object that maps a name of a field-editing component to a the index of that component in the array.
+   */
+  const editFieldComponentOrderMap = useRef(null);
   
-  if (entryComponentOrderMap.current === null) {
-    entryComponentOrderMap.current = {};
-    const entryNames = Object.keys(entryComponentsMap.current);
-    for (let i = 0; i < entryNames.length; i += 1) {
-      entryComponentOrderMap.current[entryNames[i]] = i;
+  if (editFieldComponentOrderMap.current === null) {
+    editFieldComponentOrderMap.current = {};
+    const editFieldNames = Object.keys(editFieldComponentsMap.current);
+    for (let i = 0; i < editFieldNames.length; i += 1) {
+      editFieldComponentOrderMap.current[editFieldNames[i]] = i;
     }
   }
 
   /**
-   * Defines navigation logic between field-editing components.
+   * Tracks the index of a currently displayed component in the array.
    */
   const [currentOrder, updateCurrentOrder] = useState(0);
-  const [currentEntry, selectEntry] = useState(entryComponentsMap.current["Name"]);
+  /**
+   * Tracks the currently displayed field-editing component.
+   */
+  const [currentEditField, selectEditField] = useState(editFieldComponentsMap.current["Name"]);
+
+  /**
+   * Functions for navigating between field-editing components.
+   */
 
   const selectPrevious = () => {
     if (currentOrder > 0) {
       updateCurrentOrder(currentOrder - 1);
     } else {
-      updateCurrentOrder(entryComponentsList.current.length - 1);
+      updateCurrentOrder(editFieldComponentsList.current.length - 1);
     }
   };
 
   const selectNext = () => {
-    if (currentOrder < entryComponentsList.current.length - 1) {
+    if (currentOrder < editFieldComponentsList.current.length - 1) {
       updateCurrentOrder(currentOrder + 1);
     } else {
       updateCurrentOrder(0);
     }
   };
 
+  /**
+   * Updates the current field-editing component if an index has been changed.
+   */
   useEffect(() => {
-    if (currentEntry !== entryComponentsList.current[currentOrder]) {
-      selectEntry(entryComponentsList.current[currentOrder]);
+    if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
+      selectEditField(editFieldComponentsList.current[currentOrder]);
     }
   }, [currentOrder]);
 
+  /**
+   * Updates the current index if a field-editing component has been changed.
+   */
   useEffect(() => {
-    if (currentEntry !== entryComponentsList.current[currentOrder]) {
-      updateCurrentOrder(entryComponentOrderMap.current[currentEntry.props.title]);
+    if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
+      updateCurrentOrder(editFieldComponentOrderMap.current[currentEditField.props.title]);
     }
-  }, [currentEntry]);
+  }, [currentEditField]);
 
   return (
     <div className="flex flex-col">
       <NavigationContext.Provider value={[selectPrevious, selectNext]}>
-        {currentEntry}
+        {currentEditField}
       </NavigationContext.Provider>
       <button className="btn btn-primary">Preview</button>
       <button className="btn btn-primary">Export</button>

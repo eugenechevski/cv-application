@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useRef } from "react";
 import Card from "./Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -44,11 +44,11 @@ const CardContainer = (props: any) => {
   const [wasPreviewed, setAsPreviewed] = useState(false);
   const [templateName, updateTemplateName] = useContext(TemplateNameContext);
 
-  const cardsComps = {
+  const cardsComps = useRef({
     Simple: <Card data={cardsData[0]}></Card>,
     Professional: <Card data={cardsData[1]}></Card>,
     Creative: <Card data={cardsData[2]}></Card>,
-  };
+  });
 
   return (
     <SelectionContext.Provider value={setSelectedCard}>
@@ -60,9 +60,9 @@ const CardContainer = (props: any) => {
         }
         className="container flex flex-col lg:flex-row items-center justify-evenly gap-5 w-full h-full"
       >
-        {cardsComps[selectedCard] ? (
+        {cardsComps.current[selectedCard] ? (
           <div className="flex flex-col justify-center items-center gap-3">
-            {cardsComps[selectedCard]}
+            {cardsComps.current[selectedCard]}
             {wasPreviewed ? (
               <button onClick={updateScene} className="btn btn-primary">
                 Choose As Template
@@ -82,9 +82,9 @@ const CardContainer = (props: any) => {
           </div>
         ) : (
           <>
-            {cardsComps["Simple"]}
-            {cardsComps["Professional"]}
-            {cardsComps["Creative"]}
+            {cardsComps.current["Simple"]}
+            {cardsComps.current["Professional"]}
+            {cardsComps.current["Creative"]}
           </>
         )}
       </div>
