@@ -7,7 +7,7 @@ import Table from "./edit-page/Table";
 import { TemplateNameContext } from "src/App";
 
 const NavigationContext = createContext([() => {}, () => {}]);
-const uniqueidGenerator = uniqueid()
+const uniqueidGenerator = uniqueid();
 
 const EditPage = () => {
   /**
@@ -156,42 +156,60 @@ const EditPage = () => {
    * Tracks the index of a currently displayed component in the array.
    */
   const [currentOrder, updateCurrentOrder] = useState(0);
+
   /**
    * Tracks the currently displayed field-editing component.
    */
-  const [currentEditField, selectEditField] = useState(
+  const [currentEditField, updateEditField] = useState(
     editFieldComponentsMap.current["Name"]
   );
-
-  /**
-   * Functions for navigating between field-editing components.
-   */
-
-  const selectPrevious = () => {
-    if (currentOrder > 0) {
-      updateCurrentOrder(currentOrder - 1);
-    } else {
-      updateCurrentOrder(editFieldComponentsList.current.length - 1);
-    }
-  };
-
-  const selectNext = () => {
-    if (currentOrder < editFieldComponentsList.current.length - 1) {
-      updateCurrentOrder(currentOrder + 1);
-    } else {
-      updateCurrentOrder(0);
-    }
-  };
 
   /**
    * Tracks the id of the active button in the DOM
    */
   const [currentNavButton, updateNavButton] = useState("NameNavBtn");
 
-  const updateNavActiveButton = (newNavActiveButton: string) => {
-    document.getElementById(currentNavButton)?.classList.remove("btn-active");
-    document.getElementById(newNavActiveButton)?.classList.add("btn-active");
-    updateNavButton(newNavActiveButton);
+  /**
+   * Main navigation center that synchronizes all the state changes of the navigation variables in one render.
+   * There are two sources that dispatch the event that causes the synchronization: an arrow or a button.
+   */
+  function syncNavigationState(nextEditFieldComponent: JSX.Element): void {
+    const editFieldName: string = nextEditFieldComponent.props.title;
+
+    // Update state
+    updateEditField(nextEditFieldComponent);
+    updateCurrentOrder(editFieldComponentOrderMap.current[editFieldName]);
+  };
+
+  /**
+   * Functions for navigating between field-editing components which are called
+   * when the an arrow is clicked.
+   */
+
+   const selectPrevious = () => {
+    var nextOrder = 0;
+    if (currentOrder > 0) {
+      nextOrder = currentOrder - 1;
+    } else {
+      nextOrder = editFieldComponentsList.current.length - 1;
+    }
+
+    syncNavigationState(
+      editFieldComponentsList.current[nextOrder] as JSX.Element
+    );
+  };
+
+  const selectNext = () => {
+    var nextOrder = 0;
+    if (currentOrder < editFieldComponentsList.current.length - 1) {
+      nextOrder = currentOrder + 1;
+    } else {
+      nextOrder = 0;
+    }
+
+    syncNavigationState(
+      editFieldComponentsList.current[nextOrder] as JSX.Element
+    );
   };
 
   /**
@@ -212,7 +230,10 @@ const EditPage = () => {
           id={`${editFieldName}NavBtn`}
           key={uniqueidGenerator()}
           className="btn"
-          onClick={() => selectEditField(editFieldComponentsMap.current[editFieldName])}
+          onClick={syncNavigationState.bind(
+            this,
+            editFieldComponentsMap.current[editFieldName] as JSX.Element
+          )}
         >
           {editFieldName}
         </button>
@@ -228,25 +249,14 @@ const EditPage = () => {
   }, []);
 
   /**
-   * Updates the current field-editing component if an index has been changed.
+   * Updates the navigation button when the navigation state changes.
    */
   useEffect(() => {
-    if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
-      selectEditField(editFieldComponentsList.current[currentOrder]);
-    } else {
-      updateNavActiveButton(`${editFieldNames.current[currentOrder]}NavBtn`);
-    }
-  }, [currentOrder]);
+    const editFieldName: string = currentEditField.props.title;
 
-  /**
-   * Updates the current index if a field-editing component has been changed.
-   */
-  useEffect(() => {
-    if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
-      updateCurrentOrder(editFieldComponentOrderMap.current[currentEditField.props.title]);
-    } else {
-      updateNavActiveButton(`${editFieldNames.current[currentOrder]}NavBtn`);
-    }
+    document.getElementById(currentNavButton)?.classList.remove("btn-active");
+    document.getElementById(editFieldName + 'NavBtn')?.classList.add("btn-active");
+    updateNavButton(editFieldName + 'NavBtn');
   }, [currentEditField]);
 
   return (
@@ -257,9 +267,7 @@ const EditPage = () => {
       <button className="btn btn-primary">Preview</button>
       <button className="btn btn-primary">Export</button>
       <div className="pagination">
-        <div className="btn-group">
-          {navigationButtons.current}
-        </div>
+        <div className="btn-group">{navigationButtons.current}</div>
       </div>
     </div>
   );
