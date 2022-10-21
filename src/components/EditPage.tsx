@@ -1,3 +1,4 @@
+import uniqueid from "uniqueid";
 import { useState, createContext, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
 import Input from "./edit-page/Input";
@@ -6,6 +7,7 @@ import Table from "./edit-page/Table";
 import { TemplateNameContext } from "src/App";
 
 const NavigationContext = createContext([() => {}, () => {}]);
+const uniqueidGenerator = uniqueid()
 
 const EditPage = () => {
   /**
@@ -57,11 +59,11 @@ const EditPage = () => {
   );
 
   /**
-   * Contains an object with the name of an editing field as a key and 
+   * Contains an object with the name of an editing field as a key and
    * an associated component as a value.
    */
   const editFieldComponentsMap = useRef(null);
-  
+
   if (editFieldComponentsMap.current === null) {
     editFieldComponentsMap.current = {
       Name: (
@@ -127,19 +129,26 @@ const EditPage = () => {
   }
 
   /**
-   * An array of all field-editing components.
+   * An array of the names of the edit-field components.
    */
-  const editFieldComponentsList = useRef(Object.values(editFieldComponentsMap.current));
+  const editFieldNames = useRef(Object.keys(editFieldComponentsMap.current));
+
+  /**
+   * An array of the field-editing components.
+   */
+  const editFieldComponentsList = useRef(
+    Object.values(editFieldComponentsMap.current)
+  );
+
   /**
    * An object that maps a name of a field-editing component to a the index of that component in the array.
    */
   const editFieldComponentOrderMap = useRef(null);
-  
+
   if (editFieldComponentOrderMap.current === null) {
     editFieldComponentOrderMap.current = {};
-    const editFieldNames = Object.keys(editFieldComponentsMap.current);
-    for (let i = 0; i < editFieldNames.length; i += 1) {
-      editFieldComponentOrderMap.current[editFieldNames[i]] = i;
+    for (let i = 0; i < editFieldNames.current.length; i += 1) {
+      editFieldComponentOrderMap.current[editFieldNames.current[i]] = i;
     }
   }
 
@@ -150,7 +159,9 @@ const EditPage = () => {
   /**
    * Tracks the currently displayed field-editing component.
    */
-  const [currentEditField, selectEditField] = useState(editFieldComponentsMap.current["Name"]);
+  const [currentEditField, selectEditField] = useState(
+    editFieldComponentsMap.current["Name"]
+  );
 
   /**
    * Functions for navigating between field-editing components.
@@ -173,11 +184,57 @@ const EditPage = () => {
   };
 
   /**
+   * Tracks the id of the active button in the DOM
+   */
+  const [currentNavButton, updateNavButton] = useState("NameNavBtn");
+
+  const updateNavActiveButton = (newNavActiveButton: string) => {
+    document.getElementById(currentNavButton)?.classList.remove("btn-active");
+    document.getElementById(newNavActiveButton)?.classList.add("btn-active");
+    updateNavButton(newNavActiveButton);
+  };
+
+  /**
+   * Container for navigation buttons' elements
+   */
+  const navigationButtons = useRef(null);
+
+  /**
+   * Initializes the navigation buttons
+   */
+  if (navigationButtons.current === null) {
+    navigationButtons.current = [];
+
+    for (let i = 0; i < editFieldNames.current.length; i++) {
+      let editFieldName = editFieldNames.current[i] as string;
+      navigationButtons.current.push(
+        <button
+          id={`${editFieldName}NavBtn`}
+          key={uniqueidGenerator()}
+          className="btn"
+          onClick={() => selectEditField(editFieldComponentsMap.current[editFieldName])}
+        >
+          {editFieldName}
+        </button>
+      );
+    }
+  }
+
+  /**
+   * Marks the 'Name' button as active once the component was mounted only once.
+   */
+  useEffect(() => {
+    document.getElementById("NameNavBtn")?.classList.add("btn-active");
+  }, []);
+
+  /**
    * Updates the current field-editing component if an index has been changed.
    */
   useEffect(() => {
     if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
       selectEditField(editFieldComponentsList.current[currentOrder]);
+    } else {
+      updateNavActiveButton(`${editFieldNames.current[currentOrder]}NavBtn`);
     }
   }, [currentOrder]);
 
@@ -187,6 +244,8 @@ const EditPage = () => {
   useEffect(() => {
     if (currentEditField !== editFieldComponentsList.current[currentOrder]) {
       updateCurrentOrder(editFieldComponentOrderMap.current[currentEditField.props.title]);
+    } else {
+      updateNavActiveButton(`${editFieldNames.current[currentOrder]}NavBtn`);
     }
   }, [currentEditField]);
 
@@ -199,20 +258,7 @@ const EditPage = () => {
       <button className="btn btn-primary">Export</button>
       <div className="pagination">
         <div className="btn-group">
-          <button className="btn btn-active">Name</button>
-          <button className="btn">Title</button>
-          <button className="btn">Skills</button>
-          <button className="btn">Experience</button>
-          <button className="btn">Education</button>
-          <button className="btn">Awards</button>
-          {templateName === "Simple" ? (
-            <>
-              <button className="btn">Projects</button>
-              <button className="btn">Languages</button>
-            </>
-          ) : (
-            <></>
-          )}
+          {navigationButtons.current}
         </div>
       </div>
     </div>
