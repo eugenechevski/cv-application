@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { NavigationContext } from "Components/EditPage";
 
 
-const EditEntry = (props: any) => {
+const EditField = (props: any) => {
   const { title, field } = props;
   const [selectPrevious, selectNext] = useContext(NavigationContext);
 
@@ -30,4 +30,4 @@ const EditEntry = (props: any) => {
   );
 };
 
-export default EditEntry;
+export default EditField;
