@@ -1,4 +1,4 @@
-import uniqueid from "uniqueid";
+import uniqid from 'uniqid';
 import { useState, createContext, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
 import Input from "./edit-page/Input";
@@ -7,7 +7,6 @@ import Table from "./edit-page/Table";
 import { TemplateNameContext } from "src/App";
 
 const NavigationContext = createContext([() => {}, () => {}]);
-const uniqueidGenerator = uniqueid();
 
 const EditPage = () => {
   /**
@@ -228,7 +227,7 @@ const EditPage = () => {
       navigationButtons.current.push(
         <button
           id={`${editFieldName}NavBtn`}
-          key={uniqueidGenerator()}
+          key={uniqid()}
           className="btn"
           onClick={syncNavigationState.bind(
             this,

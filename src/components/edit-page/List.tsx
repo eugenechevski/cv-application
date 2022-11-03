@@ -5,12 +5,27 @@ import { useEffect, useState, useCallback } from "react";
 
 const uniqueidGenerator = uniqueId();
 
-const List = ({ state, updateState }) => {
+// TODO: add the feature for moving items up and down
+// TODO: use 
+
+const List = (props: any) => {
+  const state: Set<string> = props.state;
+  const updateState: (newState: Set<string>) => void = props.updateState;
+
   /**
    * Functions for manual state changes:
    */
   const [, render] = useState({});
   const forceUpdate = useCallback(() => render({}), []);
+
+  const [isInputOn, setInputMode] = useState(false);
+  const [currentModified, updateModified] = useState("");
+  const [currentInput, updateInput] = useState('');
+
+  const addEntry = (newEntry: string) => {
+    state.add(newEntry);
+    updateState(state);
+  };
 
   const removeEntry = (entry: string) => {
     state.delete(entry);
@@ -18,31 +33,82 @@ const List = ({ state, updateState }) => {
     forceUpdate();
   };
 
+  const editEntry = (modifiedEntry: string) => {
+    state.delete(currentModified);
+    state.add(modifiedEntry);
+    updateState(state);
+    console.log(state);
+  };
+
+  const setNewInput = (event) => {
+    updateInput(event.target.value);
+  };
+
+  const acceptInput = () => {
+    if (isInputOn) {
+      addEntry(currentInput);
+      setInputMode(false);
+    } else if (currentModified !== '') {
+      editEntry(currentInput);
+      updateModified('');
+    }
+
+    updateInput('');
+  };
+
+  const cancelInput = () => {
+    updateInput('');
+    updateModified('');
+    setInputMode(false);
+  };
+
+  console.log(currentModified);
+
   return (
     <ul className="border rounded-lg">
       {[...state.keys()].map((entry) => (
         <li key={uniqueidGenerator()}>
           {entry}
-          <button
-            className="btn btn-circle"
-            onClick={removeEntry.bind(null, entry)}
-          >
-            <FontAwesomeIcon
-              icon={solid("x")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
-          <button className="btn btn-circle">
-            <FontAwesomeIcon
-              icon={solid("pen")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
+          <div>
+            <button
+              className="btn btn-circle"
+              onClick={removeEntry.bind(null, entry)}
+            >
+              <FontAwesomeIcon
+                icon={solid("x")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            {!isInputOn ? (
+              <button className="btn btn-circle" onClick={() => updateModified(entry)}>
+                <FontAwesomeIcon
+                  icon={solid("pen")}
+                  className="text-xs"
+                ></FontAwesomeIcon>
+              </button>
+            ): (
+              <></>
+            )}
+          </div>
         </li>
       ))}
-      <button className="btn btn-circle">
-        <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
-      </button>
+      {
+        currentModified === '' && !isInputOn ? (
+            <button className="btn btn-circle" onClick={setInputMode.bind(null, true)}>
+                <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
+            </button>
+        ) : (
+          <div>
+            <input type="text" placeholder="Type here" className="input input-bordered input-primary w-full max-w-xs" onChange={setNewInput}/>
+            <button className="btn btn-circle" onClick={acceptInput}>
+              <FontAwesomeIcon icon={solid("check")}></FontAwesomeIcon>
+            </button>
+            <button className="btn btn-circle" onClick={cancelInput}>
+              <FontAwesomeIcon icon={solid("xmark")}></FontAwesomeIcon>
+            </button>
+          </div>
+        )
+      }
     </ul>
   );
 };
