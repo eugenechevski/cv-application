@@ -6,29 +6,7 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
     var thisTail: LinkedNode<T> | undefined;
     var length = 0;
     
-    // TODO: use setters
-
-    /**
-     * Initializes the data structure
-     */
-    if (items !== undefined) {
-        let dummy = LinkedNode();
-        let prev = dummy;
-        let current = null;
-        
-        for (let i = 0; i < items.length; i++) {
-            current = LinkedNode(items[i], prev);
-            thisIndex[current.getId()] = current;
-            (prev as LinkedNode<T>).setNext(current);
-            prev = current;
-            length++;
-        }
-
-        thisHead = dummy.getNext() as LinkedNode<T>;
-        thisHead.setPrevious(undefined);
-        thisTail = current as LinkedNode<T>;
-
-    }
+    initLinkedList();
 
     function getTail(): LinkedNode<T> | undefined {
         return thisTail;
@@ -62,42 +40,50 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
         thisHead?.setPrevious(newNode);
         newNode.setNext(thisHead);
         newNode.setPrevious(undefined);
-        thisHead = newNode;
+        setHead(newNode);
 
         if (thisTail === undefined) {
-            thisTail = thisHead;
+            setTail(thisHead);
         }
 
         length++;
     }
 
+    /**
+     * Appends a node to the end of the list
+     * @param newNode - node to be appended
+     */
     function appendNode(newNode: LinkedNode<T>): void {
         thisIndex[newNode.getId()] = newNode;
         
         if (thisTail !== undefined) {
             thisTail.setNext(newNode);
             newNode.setPrevious(thisTail);
-            thisTail = newNode;
+            setTail(newNode);
         } else {
-            thisHead = newNode;
-            thisTail = newNode;
+            setHead(newNode);
+            setTail(newNode);
         }
 
         length++;
     }
 
+    /**
+     * Removes a node from the list.
+     * @param nodeId - an optional argument that provides the id of a node
+     * @param node - an optional argument that provides the node itself
+     * @returns node that was removed
+     */
     function removeNode(nodeId: string): LinkedNode<T> | undefined {
-        let nodeToBeDeleted;
+        let nodeToBeDeleted = thisIndex[nodeId];
 
-        if (nodeId in thisIndex) {
-            nodeToBeDeleted = thisIndex[nodeId];
-
+        if (nodeToBeDeleted !== undefined) {
             if (nodeToBeDeleted === thisHead) {
-                thisHead = nodeToBeDeleted.getNext();
+                setHead(nodeToBeDeleted.getNext());
             }
 
             if (nodeToBeDeleted === thisTail) {
-                thisTail = nodeToBeDeleted.getPrevious();
+                setTail(nodeToBeDeleted.getPrevious());
             }
 
             // Change pointers
@@ -121,15 +107,15 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
 
         if (node1 && node2 && node1 !== node2) {
             if (node1 === thisHead) {
-                thisHead = node2;
+                setHead(node2);
             } else if (node2 === thisHead) {
-                thisHead = node1;
+                setHead(node1);
             } 
             
             if (node1 === thisTail) {
-                thisTail = node2;
+                setTail(node2);
             } else if (node2 === thisTail) {
-                thisTail = node1;
+                setTail(node1);
             }
 
             // Copy the pointers of the first node
@@ -182,7 +168,27 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
             yield current;
             current = current.getNext();
         }
-    } 
+    }
+
+    function initLinkedList(): void {
+        if (items !== undefined) {
+            let dummy = LinkedNode();
+            let prev = dummy;
+            let current = null;
+            
+            for (let i = 0; i < items.length; i++) {
+                current = LinkedNode(items[i], prev);
+                thisIndex[current.getId()] = current;
+                (prev as LinkedNode<T>).setNext(current);
+                prev = current;
+                length++;
+            }
+    
+            setHead(dummy.getNext() as LinkedNode<T>);
+            thisHead.setPrevious(undefined);
+            setTail(current as LinkedNode<T>);
+        }
+    }
 
     return {
         getTail,

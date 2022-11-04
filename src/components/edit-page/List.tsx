@@ -1,16 +1,11 @@
-import uniqueId from "uniqueid";
+import LinkedNode from "src/indexed-linked-list/LinkedNode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useEffect, useState, useCallback } from "react";
 
-const uniqueidGenerator = uniqueId();
-
-// TODO: add the feature for moving items up and down
-// TODO: use 
-
 const List = (props: any) => {
-  const state: Set<string> = props.state;
-  const updateState: (newState: Set<string>) => void = props.updateState;
+  const state: IndexedLinkedList<string> = props.state;
+  const updateState: (newState: IndexedLinkedList<string>) => void = props.updateState;
 
   /**
    * Functions for manual state changes:
@@ -19,25 +14,23 @@ const List = (props: any) => {
   const forceUpdate = useCallback(() => render({}), []);
 
   const [isInputOn, setInputMode] = useState(false);
-  const [currentModified, updateModified] = useState("");
+  const [currentModified, updateModified] = useState(null);
   const [currentInput, updateInput] = useState('');
 
   const addEntry = (newEntry: string) => {
-    state.add(newEntry);
+    state.appendNode(LinkedNode(newEntry));
     updateState(state);
   };
 
-  const removeEntry = (entry: string) => {
-    state.delete(entry);
+  const removeEntry = (entryId: string) => {
+    state.removeNode(entryId);
     updateState(state);
     forceUpdate();
   };
 
-  const editEntry = (modifiedEntry: string) => {
-    state.delete(currentModified);
-    state.add(modifiedEntry);
+  const editEntry = (entry: LinkedNode<string>) => {
+    entry.setValue(currentInput);
     updateState(state);
-    console.log(state);
   };
 
   const setNewInput = (event) => {
@@ -48,9 +41,9 @@ const List = (props: any) => {
     if (isInputOn) {
       addEntry(currentInput);
       setInputMode(false);
-    } else if (currentModified !== '') {
-      editEntry(currentInput);
-      updateModified('');
+    } else if (currentModified !== null) {
+      editEntry(currentModified);
+      updateModified(null);
     }
 
     updateInput('');
@@ -62,17 +55,15 @@ const List = (props: any) => {
     setInputMode(false);
   };
 
-  console.log(currentModified);
-
   return (
     <ul className="border rounded-lg">
-      {[...state.keys()].map((entry) => (
-        <li key={uniqueidGenerator()}>
-          {entry}
+      {[...state].map((entry: LinkedNode<string>) => (
+        <li key={entry.getId()}>
+          {entry.getValue()}
           <div>
             <button
               className="btn btn-circle"
-              onClick={removeEntry.bind(null, entry)}
+              onClick={removeEntry.bind(null, entry.getId())}
             >
               <FontAwesomeIcon
                 icon={solid("x")}
@@ -93,7 +84,7 @@ const List = (props: any) => {
         </li>
       ))}
       {
-        currentModified === '' && !isInputOn ? (
+        currentModified === null && !isInputOn ? (
             <button className="btn btn-circle" onClick={setInputMode.bind(null, true)}>
                 <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
             </button>

@@ -1,6 +1,7 @@
 import uniqid from 'uniqid';
 import { useState, createContext, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
+import IndexedLinkedList from 'src/indexed-linked-list/IndexedLinkedList';
 import Input from "./edit-page/Input";
 import List from "./edit-page/List";
 import Table from "./edit-page/Table";
@@ -21,7 +22,7 @@ const EditPage = () => {
   const [name, updateName] = useState("John Doe");
   const [title, updateTitle] = useState("Lorem ipsum dolor sit amet");
   const [skills, updateSkills] = useState(
-    new Set(["Skill 1", "Skill 2", "Skill 3"])
+    IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
   const [experience, updateExperience] = useState({
     0: {
@@ -48,13 +49,13 @@ const EditPage = () => {
     },
   });
   const [awards, updateAwards] = useState(
-    new Set(["Award 1", "Award 2", "Award 3"])
+    IndexedLinkedList(["Award 1", "Award 2", "Award 3"])
   );
   const [projects, updateProjects] = useState(
-    new Set(["Project 1", "Project 2", "Project 3"])
+    IndexedLinkedList(["Project 1", "Project 2", "Project 3"])
   );
   const [languages, updateLanguages] = useState(
-    new Set(["Language 1", "Language 2", "Language 3"])
+    IndexedLinkedList(["Language 1", "Language 2", "Language 3"])
   );
 
   /**
