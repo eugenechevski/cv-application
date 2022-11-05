@@ -16,6 +16,7 @@ const List = (props: any) => {
   const [isInputOn, setInputMode] = useState(false);
   const [currentModified, updateModified] = useState(null);
   const [currentInput, updateInput] = useState('');
+  const [selectedEntryId, setSelectedEntryId] = useState('');
 
   const addEntry = (newEntry: string) => {
     state.appendNode(LinkedNode(newEntry));
@@ -51,36 +52,35 @@ const List = (props: any) => {
 
   const cancelInput = () => {
     updateInput('');
-    updateModified('');
+    updateModified(null);
     setInputMode(false);
+  };
+
+  const selectEntry = (entryId: string) => {
+    document.getElementById(selectedEntryId)?.classList.remove('bg-secondary');
+    document.getElementById(entryId)?.classList.add('bg-secondary');
+    setSelectedEntryId(entryId);
+  }
+
+  const moveUp = () => {
+    const currentNode = state.getNode(selectedEntryId);
+    state.swapNodes(currentNode, currentNode.getPrevious());
+    updateState(state);
+    forceUpdate();
+  };
+  
+  const moveDown = () => {
+    const currentNode = state.getNode(selectedEntryId);
+    state.swapNodes(currentNode.getNext(), currentNode);
+    updateState(state);
+    forceUpdate();
   };
 
   return (
     <ul className="border rounded-lg">
       {[...state].map((entry: LinkedNode<string>) => (
-        <li key={entry.getId()}>
+        <li key={entry.getId()} className="border border-primary cursor-pointer" id={entry.getId()} onClick={selectEntry.bind(null, entry.getId())}>
           {entry.getValue()}
-          <div>
-            <button
-              className="btn btn-circle"
-              onClick={removeEntry.bind(null, entry.getId())}
-            >
-              <FontAwesomeIcon
-                icon={solid("x")}
-                className="text-xs"
-              ></FontAwesomeIcon>
-            </button>
-            {!isInputOn ? (
-              <button className="btn btn-circle" onClick={() => updateModified(entry)}>
-                <FontAwesomeIcon
-                  icon={solid("pen")}
-                  className="text-xs"
-                ></FontAwesomeIcon>
-              </button>
-            ): (
-              <></>
-            )}
-          </div>
         </li>
       ))}
       {
@@ -98,6 +98,45 @@ const List = (props: any) => {
               <FontAwesomeIcon icon={solid("xmark")}></FontAwesomeIcon>
             </button>
           </div>
+        )
+      }
+      {
+        selectedEntryId !== '' ? (
+          <div>
+            <button
+              className="btn btn-circle"
+              onClick={removeEntry.bind(null, selectedEntryId)}
+            >
+              <FontAwesomeIcon
+                icon={solid("x")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            {!isInputOn ? (
+              <button className="btn btn-circle" onClick={() => updateModified(state.getNode(selectedEntryId))}>
+                <FontAwesomeIcon
+                  icon={solid("pen")}
+                  className="text-xs"
+                ></FontAwesomeIcon>
+              </button>
+            ): (
+              <></>
+            )}
+            <button className="btn btn-circle" onClick={moveUp}>
+              <FontAwesomeIcon 
+                icon={solid('arrow-up')}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            <button className="btn btn-circle" onClick={moveDown}>
+              <FontAwesomeIcon 
+                icon={solid('arrow-down')}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+          </div>
+        ) : (
+          <></>
         )
       }
     </ul>
