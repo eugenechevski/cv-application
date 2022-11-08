@@ -25,6 +25,8 @@ declare type IndexedLinkedList<T> = {
 }
 
 declare type Row = {
+    getAllFields: () => string[],
+    getFieldValue: (fieldName: string) => string | undefined,
     addField: (newField: string, initValue?: string) => boolean,
     removeField: (fieldName: string) => boolean,
     editField: (fieldName: string, newValue?: string) => boolean,

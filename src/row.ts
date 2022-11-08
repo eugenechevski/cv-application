@@ -2,6 +2,21 @@ export default function Row(initFields: {[index: string]: string}): Row {
     var thisFields = initFields;
 
     /**
+     * @returns all the field names of the row.
+     */
+    function getAllFields(): string[] {
+        return Object.keys(thisFields);
+    }
+
+    /**
+     * @param fieldName - the name of the field which value should be returned.
+     * @returns the value of the field.
+     */
+    function getFieldValue(fieldName: string): string | undefined {
+        return thisFields[fieldName];
+    }
+
+    /**
      * Adds a new field to this row if the field is not present already.
      * @param fieldName - the name of the field
      * @param initialValue - the initial value of the field
@@ -13,7 +28,7 @@ export default function Row(initFields: {[index: string]: string}): Row {
         if (fieldName in thisFields) {
             additionStatus = false;
         } else {
-            thisFields[fieldName] = initialValue;
+            thisFields[fieldName] = initialValue === undefined ? '' : initialValue;
         }
 
         return additionStatus;
@@ -70,6 +85,8 @@ export default function Row(initFields: {[index: string]: string}): Row {
     }
 
     return {
+        getAllFields,
+        getFieldValue,
         addField,
         removeField,
         editField,
