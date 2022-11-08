@@ -23,3 +23,10 @@ declare type IndexedLinkedList<T> = {
     pop: () => LinkedNode<T>,
     [Symbol.iterator],
 }
+
+declare type Row = {
+    addField: (newField: string, initValue?: string) => boolean,
+    removeField: (fieldName: string) => boolean,
+    editField: (fieldName: string, newValue?: string) => boolean,
+    createNewInstance: () => Row,
+}

@@ -24,6 +24,24 @@ const EditPage = () => {
   const [skills, updateSkills] = useState(
     IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
+
+
+  /**  
+   *  Row
+   *    fields: {[fieldName: string]: string}
+   * 
+   *    addField,
+   *    removeField,
+   *    editField,
+   *    createInstance,
+   *    
+   *  Table
+   *    rows: Row[]
+   *    
+   *    addRow,
+   *    removeRow,
+   *    swapRow,
+   */
   const [experience, updateExperience] = useState({
     0: {
       companyName: "ABC Company",
