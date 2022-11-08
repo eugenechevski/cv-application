@@ -1,7 +1,8 @@
-import uniqid from 'uniqid';
+import uniqid from "uniqid";
 import { useState, createContext, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
-import IndexedLinkedList from 'src/indexed-linked-list/IndexedLinkedList';
+import IndexedLinkedList from "src/indexed-linked-list/IndexedLinkedList";
+import Row from "src/row";
 import Input from "./edit-page/Input";
 import List from "./edit-page/List";
 import Table from "./edit-page/Table";
@@ -25,47 +26,34 @@ const EditPage = () => {
     IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
 
-
-  /**  
-   *  Row
-   *    fields: {[fieldName: string]: string}
-   * 
-   *    addField,
-   *    removeField,
-   *    editField,
-   *    createInstance,
-   *    
-   *  Table
-   *    rows: Row[]
-   *    
-   *    addRow,
-   *    removeRow,
-   *    swapRow,
-   */
-  const [experience, updateExperience] = useState({
-    0: {
-      companyName: "ABC Company",
-      jobTitle: "Manager",
-      timeFrom: Date.now(),
-      timeTo: Date.now(),
-      location: "NY City",
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
+  const [experience, updateExperience] = useState(
+    IndexedLinkedList([
+      Row({
+        companyName: "ABC Company",
+        jobTitle: "Manager",
+        timeFrom: Date.now().toString(),
+        timeTo: Date.now().toString(),
+        location: "NY City",
+        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
+        interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
+        lacinia felis eu finibus.`,
+      }),
+    ])
+  );
+  const [education, updateEducation] = useState(
+    IndexedLinkedList([
+      Row({
+        schoolName: "Harvard",
+        degree: "Bachelor's",
+        timeFrom: Date.now().toString(),
+        timeTo: Date.now().toString(),
+        location: "Boston",
+        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
       interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
       lacinia felis eu finibus.`,
-    },
-  });
-  const [education, updateEducation] = useState({
-    0: {
-      schoolName: "Harvard",
-      degree: "Bachelor's",
-      timeFrom: Date.now(),
-      timeTo: Date.now(),
-      location: "Boston",
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
-      interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
-      lacinia felis eu finibus.`,
-    },
-  });
+      }),
+    ])
+  );
   const [awards, updateAwards] = useState(
     IndexedLinkedList(["Award 1", "Award 2", "Award 3"])
   );
@@ -197,14 +185,14 @@ const EditPage = () => {
     // Update state
     updateEditField(nextEditFieldComponent);
     updateCurrentOrder(editFieldComponentOrderMap.current[editFieldName]);
-  };
+  }
 
   /**
    * Functions for navigating between field-editing components which are called
    * when the an arrow is clicked.
    */
 
-   const selectPrevious = () => {
+  const selectPrevious = () => {
     var nextOrder = 0;
     if (currentOrder > 0) {
       nextOrder = currentOrder - 1;
@@ -273,12 +261,14 @@ const EditPage = () => {
     const editFieldName: string = currentEditField.props.title;
 
     document.getElementById(currentNavButton)?.classList.remove("btn-active");
-    document.getElementById(editFieldName + 'NavBtn')?.classList.add("btn-active");
-    updateNavButton(editFieldName + 'NavBtn');
+    document
+      .getElementById(editFieldName + "NavBtn")
+      ?.classList.add("btn-active");
+    updateNavButton(editFieldName + "NavBtn");
   }, [currentEditField]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-3 justify-center items-center border border-purple-500">
       <NavigationContext.Provider value={[selectPrevious, selectNext]}>
         {currentEditField}
       </NavigationContext.Provider>

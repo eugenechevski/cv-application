@@ -16,7 +16,7 @@ const EditField = (props: any) => {
             icon={solid("arrow-left")}
         ></FontAwesomeIcon>
       </button>
-      <div className="flex flex-col">
+      <div className="flex flex-col border border-red-500 justify-center">
         <h1>{title}</h1>
         {field}
       </div>
