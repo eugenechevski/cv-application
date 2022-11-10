@@ -268,14 +268,20 @@ const EditPage = () => {
   }, [currentEditField]);
 
   return (
-    <div className="flex flex-col gap-3 justify-center items-center border border-purple-500">
-      <NavigationContext.Provider value={[selectPrevious, selectNext]}>
-        {currentEditField}
-      </NavigationContext.Provider>
-      <button className="btn btn-primary">Preview</button>
-      <button className="btn btn-primary">Export</button>
-      <div className="pagination">
-        <div className="btn-group">{navigationButtons.current}</div>
+    <div className="flex flex-col justify-center border border-purple-500 h-full w-1/2">
+      <div className="basis-2/3 border border-red-600 flex justify-center items-center">
+        <NavigationContext.Provider value={[selectPrevious, selectNext]}>
+          {currentEditField}
+        </NavigationContext.Provider>
+      </div>
+      <div className="basis-1/6 border border-blue-500 flex flex-col justify-center items-center gap-3">
+        <button className="btn btn-primary w-1/3">Preview</button>
+        <button className="btn btn-primary w-1/3">Export</button>
+      </div>
+      <div className="basis-1/6 border border-green-500 flex justify-center items-center">
+        <div className="pagination items-end">
+          <div className="btn-group">{navigationButtons.current}</div>
+        </div>
       </div>
     </div>
   );
