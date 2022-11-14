@@ -28,11 +28,11 @@ it ('Tests the IndexedLinkedList', () => {
     expect(newList.getTail().getValue()).toBe(6);
 
     // Iteration tests
-    const nodes: LinkedNode<number>[] = [...newList];
+    const nodes: {i: number, node: LinkedNode<number>}[] = [...newList];
     expect(nodes.length).toBe(6);
     
     for (let i = 0; i < nodes.length; i += 1) {
-        expect(nodes[i].getValue()).toBe(i + 1);
+        expect(nodes[i].node.getValue()).toBe(i + 1);
     }
 
     // popLeft() tests

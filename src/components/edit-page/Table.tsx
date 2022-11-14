@@ -1,7 +1,7 @@
 import uniqid from "uniqid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import LinkedNode from "src/indexed-linked-list/LinkedNode";
 
 const Table = (props: any) => {
@@ -21,8 +21,10 @@ const Table = (props: any) => {
     updateState(state);
     forceUpdate();
   };
-  const [selectedRow, selectRow] = useState(null);
-  const [selectedField, selectField] = useState("");
+  const [selectedTarget, selectTarget] = useState({
+    selectedRow: null,
+    selectedField: "",
+  });
   const [isInputOn, setInputMode] = useState(false);
   const [currentInput, setNewInput] = useState("");
 
@@ -30,28 +32,14 @@ const Table = (props: any) => {
    * Functions for operating on the state
    */
 
-  const setSelectedRow = (node: LinkedNode<Row>) => {
-    if (selectedRow !== null) {
-      document
-        .getElementById((selectedRow as LinkedNode<Row>).getId())
-        ?.classList.remove("border", "border-secondary");
-    }
-    document.getElementById(node.getId())?.classList.add("border", "border-secondary");
-    selectRow(node);
-  };
-
-  const setSelectedField = (fieldId: string, node: LinkedNode<Row>) => {
-    document.getElementById(selectedField)?.classList.remove("bg-accent");
-    document.getElementById(fieldId)?.classList.add("bg-accent");
-    selectField(fieldId);
-    setSelectedRow(node);
-  };
-
   const acceptInput = () => {
-    (selectedRow as LinkedNode<Row>)
+    (selectedTarget.selectedRow as LinkedNode<Row>)
       .getValue()
       .editField(
-        selectedField.slice(0, selectedField.indexOf("-")),
+        selectedTarget.selectedField.slice(
+          0,
+          selectedTarget.selectedField.indexOf("-")
+        ),
         currentInput
       );
     setNewInput("");
@@ -72,59 +60,25 @@ const Table = (props: any) => {
   };
 
   const removeRow = () => {
-    state.removeNode((selectedRow as LinkedNode<Row>).getId());
+    state.removeNode((selectedTarget.selectedRow as LinkedNode<Row>).getId());
     updateAllStates();
   };
 
   const moveRowUp = () => {
     state.swapNodes(
-      selectedRow as LinkedNode<Row>,
-      (selectedRow as LinkedNode<Row>).getNext()
+      (selectedTarget.selectedRow as LinkedNode<Row>).getPrevious(),
+      selectedTarget.selectedRow as LinkedNode<Row>
     );
     updateAllStates();
   };
 
   const moveRowDown = () => {
     state.swapNodes(
-      (selectedRow as LinkedNode<Row>).getPrevious(),
-      selectedRow
+      selectedTarget.selectedRow as LinkedNode<Row>,
+      (selectedTarget.selectedRow as LinkedNode<Row>).getNext()
     );
     updateAllStates();
   };
-
-  /**
-   * Table construction
-   */
-  const nodes = [...state];
-  const rowElements = [];
-  for (let i = 0; i < nodes.length; i++) {
-    let node = nodes[i] as LinkedNode<Row>;
-    rowElements.push(
-      <tr
-        id={node.getId()}
-        key={uniqid()}
-        onClick={setSelectedRow.bind(null, node)}
-        className="cursor-pointer"
-      >
-        <th className="border-r border-r-neutral">{i + 1}</th>
-        {[
-          node
-            .getValue()
-            .getAllFields()
-            .map((field: string) => (
-              <td
-                className="whitespace-normal overflow-scroll cursor-pointer border-l border-l-neutral"
-                id={field + "-" + i}
-                key={uniqid()}
-                onClick={setSelectedField.bind(null, field + "-" + i, node)}
-              >
-                {node.getValue().getFieldValue(field)}
-              </td>
-            )),
-        ]}
-      </tr>
-    );
-  }
 
   return (
     <div className="flex flex-col">
@@ -142,7 +96,46 @@ const Table = (props: any) => {
             ]}
           </tr>
         </thead>
-        <tbody>{rowElements}</tbody>
+        <tbody>
+          {
+            ([...state] as {i: number, node: LinkedNode<Row>}[]).map(entry => (
+              <tr
+                  id={entry.node.getId()}
+                  key={uniqid()}
+                  className={
+                    (entry.node === selectedTarget.selectedRow
+                      ? "border border-secondary"
+                      : "") + " cursor-pointer"
+                  }
+                >
+                  <th className="border-r border-r-neutral">{entry.i + 1}</th>
+                  {[
+                    entry.node
+                      .getValue()
+                      .getAllFields()
+                      .map((field: string) => (
+                        <td
+                          className={
+                            (field + "-" + entry.node.getId() === selectedTarget.selectedField
+                              ? "bg-accent"
+                              : "") +
+                            " whitespace-normal overflow-scroll cursor-pointer border-l border-l-neutral"
+                          }
+                          id={field + "-" + entry.node.getId()}
+                          key={uniqid()}
+                          onClick={selectTarget.bind(null, {
+                            selectedField: field + "-" + entry.node.getId(),
+                            selectedRow: entry.node,
+                          })}
+                        >
+                          {entry.node.getValue().getFieldValue(field)}
+                        </td>
+                      )),
+                  ]}
+                </tr>
+            ))
+          }
+        </tbody>
       </table>
       {/* Add a row button */}
       <button className="btn btn-circle" onClick={addRow}>

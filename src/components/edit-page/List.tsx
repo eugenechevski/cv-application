@@ -80,14 +80,14 @@ const List = (props: any) => {
   return (
     <div className="border border-blue-500 max-h-[50%] w-1/2 flex flex-col justify-center items-center gap-2">
       <ul className="w-full overflow-scroll">
-        {[...state].map((entry: LinkedNode<string>) => (
+        {([...state] as {i: number, node: LinkedNode<string>}[]).map((entry) => (
           <li
-            key={entry.getId()}
+            key={entry.node.getId()}
             className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary"
-            id={entry.getId()}
-            onClick={selectEntry.bind(null, entry.getId())}
+            id={entry.node.getId()}
+            onClick={selectEntry.bind(null, entry.node.getId())}
           >
-            {entry.getValue()}
+            {entry.node.getValue()}
           </li>
         ))}
       </ul>

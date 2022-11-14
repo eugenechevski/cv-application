@@ -161,12 +161,14 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
         return removeNode(thisTail?.getId());
     }
 
-    function* generateIteration(): Generator<LinkedNode<T>> {
+    function* generateIteration(): Generator<{i: number, node: LinkedNode<T>}> {
         let current = thisHead;
+        let i = 0;
 
         while (current) {
-            yield current;
+            yield {i, node: current};
             current = current.getNext();
+            i += 1;
         }
     }
 
