@@ -17,7 +17,7 @@ const EditField = (props: any) => {
         ></FontAwesomeIcon>
       </button>
       <div className="flex flex-col border border-red-500 justify-center items-center w-full h-full p-3 gap-3">
-        <h1 className="text-3xl">{title}</h1>
+        <h1 className="text-3xl my-3">{title}</h1>
         {field}
       </div>
       <button className="btn btn-circle btn-secondary" onClick={selectNext}>

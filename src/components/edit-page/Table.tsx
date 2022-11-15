@@ -4,6 +4,12 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState, useCallback, useRef } from "react";
 import LinkedNode from "src/indexed-linked-list/LinkedNode";
 
+/**
+ * TODO:
+ *  Add validation of fields
+ *  Add the date picker
+ */
+
 const Table = (props: any) => {
   /**
    * Props
@@ -81,114 +87,118 @@ const Table = (props: any) => {
   };
 
   return (
-    <div className="flex flex-col">
-      {/* Table */}
-      <table className="table text-sm overflow-scroll max-h-[50%] border border-neutral">
-        <thead>
-          <tr>
-            <th></th>
-            {[
-              state
-                .getHead()
-                .getValue()
-                .getAllFields()
-                .map((field: string) => <th key={uniqid()}>{field}</th>),
-            ]}
-          </tr>
-        </thead>
-        <tbody>
-          {
-            ([...state] as {i: number, node: LinkedNode<Row>}[]).map(entry => (
-              <tr
-                  id={entry.node.getId()}
-                  key={uniqid()}
-                  className={
-                    (entry.node === selectedTarget.selectedRow
-                      ? "border border-secondary"
-                      : "") + " cursor-pointer"
-                  }
-                >
-                  <th className="border-r border-r-neutral">{entry.i + 1}</th>
-                  {[
-                    entry.node
-                      .getValue()
-                      .getAllFields()
-                      .map((field: string) => (
-                        <td
-                          className={
-                            (field + "-" + entry.node.getId() === selectedTarget.selectedField
-                              ? "bg-accent"
-                              : "") +
-                            " whitespace-normal overflow-scroll cursor-pointer border-l border-l-neutral"
-                          }
-                          id={field + "-" + entry.node.getId()}
-                          key={uniqid()}
-                          onClick={selectTarget.bind(null, {
-                            selectedField: field + "-" + entry.node.getId(),
-                            selectedRow: entry.node,
-                          })}
-                        >
-                          {entry.node.getValue().getFieldValue(field)}
-                        </td>
-                      )),
-                  ]}
-                </tr>
-            ))
-          }
-        </tbody>
-      </table>
-      {/* Add a row button */}
-      <button className="btn btn-circle" onClick={addRow}>
-        <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
-      </button>
-      {/* Input container */}
-      {isInputOn ? (
-        <div className="flex justify-center gap-2">
-          <input
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered input-primary w-full max-w-xs"
-            onChange={(e: any) => setNewInput(e.target.value)}
-          />
-          <button className="btn btn-circle" onClick={acceptInput}>
-            <FontAwesomeIcon icon={solid("check")}></FontAwesomeIcon>
+    <div className="flex flex-col h-full gap-3">
+      <div className="max-h-full overflow-scroll">
+        {/* Table */}
+        <table className="table text-sm border border-neutral">
+          <thead>
+            <tr>
+              <th></th>
+              {[
+                state
+                  .getHead()
+                  .getValue()
+                  .getAllFields()
+                  .map((field: string) => <th key={uniqid()}>{field}</th>),
+              ]}
+            </tr>
+          </thead>
+          <tbody>
+            {
+              ([...state] as {i: number, node: LinkedNode<Row>}[]).map(entry => (
+                <tr
+                    id={entry.node.getId()}
+                    key={uniqid()}
+                    className={
+                      (entry.node === selectedTarget.selectedRow
+                        ? "border border-secondary"
+                        : "") + " cursor-pointer"
+                    }
+                  >
+                    <th className="border-r border-r-neutral">{entry.i + 1}</th>
+                    {[
+                      entry.node
+                        .getValue()
+                        .getAllFields()
+                        .map((field: string) => (
+                          <td
+                            className={
+                              (field + "-" + entry.node.getId() === selectedTarget.selectedField
+                                ? "bg-accent"
+                                : "") +
+                              " whitespace-normal cursor-pointer border-l border-l-neutral"
+                            }
+                            id={field + "-" + entry.node.getId()}
+                            key={uniqid()}
+                            onClick={selectTarget.bind(null, {
+                              selectedField: field + "-" + entry.node.getId(),
+                              selectedRow: entry.node,
+                            })}
+                          >
+                            {entry.node.getValue().getFieldValue(field)}
+                          </td>
+                        )),
+                    ]}
+                  </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <div className="flex flex-col justify-center items-center border-t border-neutral p-2">
+        {/* Add a row button */}
+        <button className="btn btn-circle" onClick={addRow}>
+          <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
+        </button>
+        {/* Input container */}
+        {isInputOn ? (
+          <div className="flex justify-center gap-2">
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered input-primary w-full max-w-xs"
+              onChange={(e: any) => setNewInput(e.target.value)}
+            />
+            <button className="btn btn-circle" onClick={acceptInput}>
+              <FontAwesomeIcon icon={solid("check")}></FontAwesomeIcon>
+            </button>
+            <button className="btn btn-circle" onClick={rejectInput}>
+              <FontAwesomeIcon icon={solid("xmark")}></FontAwesomeIcon>
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
+        {/* Modification buttons */}
+        <div className="flex gap-2">
+          <button className="btn btn-circle" onClick={removeRow}>
+            <FontAwesomeIcon
+              icon={solid("x")}
+              className="text-xs"
+            ></FontAwesomeIcon>
           </button>
-          <button className="btn btn-circle" onClick={rejectInput}>
-            <FontAwesomeIcon icon={solid("xmark")}></FontAwesomeIcon>
+          <button
+            className="btn btn-circle"
+            onClick={setInputMode.bind(null, true)}
+          >
+            <FontAwesomeIcon
+              icon={solid("pen")}
+              className="text-xs"
+            ></FontAwesomeIcon>
+          </button>
+          <button className="btn btn-circle" onClick={moveRowUp}>
+            <FontAwesomeIcon
+              icon={solid("arrow-up")}
+              className="text-xs"
+            ></FontAwesomeIcon>
+          </button>
+          <button className="btn btn-circle" onClick={moveRowDown}>
+            <FontAwesomeIcon
+              icon={solid("arrow-down")}
+              className="text-xs"
+            ></FontAwesomeIcon>
           </button>
         </div>
-      ) : (
-        <></>
-      )}
-      {/* Modification buttons */}
-      <div className="flex gap-2">
-        <button className="btn btn-circle" onClick={removeRow}>
-          <FontAwesomeIcon
-            icon={solid("x")}
-            className="text-xs"
-          ></FontAwesomeIcon>
-        </button>
-        <button
-          className="btn btn-circle"
-          onClick={setInputMode.bind(null, true)}
-        >
-          <FontAwesomeIcon
-            icon={solid("pen")}
-            className="text-xs"
-          ></FontAwesomeIcon>
-        </button>
-        <button className="btn btn-circle" onClick={moveRowUp}>
-          <FontAwesomeIcon
-            icon={solid("arrow-up")}
-            className="text-xs"
-          ></FontAwesomeIcon>
-        </button>
-        <button className="btn btn-circle" onClick={moveRowDown}>
-          <FontAwesomeIcon
-            icon={solid("arrow-down")}
-            className="text-xs"
-          ></FontAwesomeIcon>
-        </button>
       </div>
     </div>
   );
