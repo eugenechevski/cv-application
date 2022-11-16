@@ -17,6 +17,7 @@ const Table = (props: any) => {
   const state: IndexedLinkedList<Row> = props.state;
   const updateState: (newState: IndexedLinkedList<Row>) => void =
     props.updateState;
+  const title: string = props.title;
 
   /**
    * States
@@ -87,10 +88,11 @@ const Table = (props: any) => {
   };
 
   return (
-    <div className="flex flex-col h-full gap-3">
-      <div className="max-h-full overflow-scroll">
+    <div className="flex flex-col h-full gap">
+      <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">{title}</h1>
+      <div className="overflow-scroll h-4/6 w-full">
         {/* Table */}
-        <table className="table text-sm border border-neutral">
+        <table className="table text-sm border border-neutral h-full w-full">
           <thead>
             <tr>
               <th></th>
@@ -145,11 +147,7 @@ const Table = (props: any) => {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col justify-center items-center border-t border-neutral p-2">
-        {/* Add a row button */}
-        <button className="btn btn-circle" onClick={addRow}>
-          <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
-        </button>
+      <div className="flex flex-col justify-center items-center border-t border-neutral p-2 h-1/6">
         {/* Input container */}
         {isInputOn ? (
           <div className="flex justify-center gap-2">
@@ -167,38 +165,44 @@ const Table = (props: any) => {
             </button>
           </div>
         ) : (
-          <></>
+          <button className="btn btn-circle" onClick={addRow}>
+            <FontAwesomeIcon icon={solid("plus")}></FontAwesomeIcon>
+          </button>
         )}
         {/* Modification buttons */}
-        <div className="flex gap-2">
-          <button className="btn btn-circle" onClick={removeRow}>
-            <FontAwesomeIcon
-              icon={solid("x")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
-          <button
-            className="btn btn-circle"
-            onClick={setInputMode.bind(null, true)}
-          >
-            <FontAwesomeIcon
-              icon={solid("pen")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
-          <button className="btn btn-circle" onClick={moveRowUp}>
-            <FontAwesomeIcon
-              icon={solid("arrow-up")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
-          <button className="btn btn-circle" onClick={moveRowDown}>
-            <FontAwesomeIcon
-              icon={solid("arrow-down")}
-              className="text-xs"
-            ></FontAwesomeIcon>
-          </button>
-        </div>
+        { selectedTarget.selectedRow !== null && !isInputOn ? (
+          <div className="flex gap-2">
+            <button className="btn btn-circle" onClick={removeRow}>
+              <FontAwesomeIcon
+                icon={solid("x")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            <button
+              className="btn btn-circle"
+              onClick={setInputMode.bind(null, true)}
+            >
+              <FontAwesomeIcon
+                icon={solid("pen")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            <button className="btn btn-circle" onClick={moveRowUp}>
+              <FontAwesomeIcon
+                icon={solid("arrow-up")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+            <button className="btn btn-circle" onClick={moveRowDown}>
+              <FontAwesomeIcon
+                icon={solid("arrow-down")}
+                className="text-xs"
+              ></FontAwesomeIcon>
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

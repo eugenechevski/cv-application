@@ -74,42 +74,36 @@ const EditPage = () => {
     editFieldComponentsMap.current = {
       Name: (
         <EditField
-          title={"Name"}
-          field={<Input state={name} updateState={updateName}></Input>}
+          field={<Input state={name} updateState={updateName} title={"Name"}></Input>}
         ></EditField>
       ),
       Title: (
         <EditField
-          title={"Title"}
-          field={<Input state={title} updateState={updateTitle}></Input>}
+          field={<Input state={title} updateState={updateTitle} title={"Title"}></Input>}
         ></EditField>
       ),
       Skills: (
         <EditField
-          title={"Skills"}
-          field={<List state={skills} updateState={updateSkills}></List>}
+          field={<List state={skills} updateState={updateSkills} title={"Skills"}></List>}
         ></EditField>
       ),
       Experience: (
         <EditField
-          title={"Experience"}
           field={
-            <Table state={experience} updateState={updateExperience}></Table>
+            <Table state={experience} updateState={updateExperience} title={"Experience"}></Table>
           }
         ></EditField>
       ),
       Education: (
         <EditField
-          title={"Education"}
           field={
-            <Table state={education} updateState={updateEducation}></Table>
+            <Table state={education} updateState={updateEducation} title={"Education"}></Table>
           }
         ></EditField>
       ),
       Awards: (
         <EditField
-          title={"Awards"}
-          field={<List state={awards} updateState={updateAwards}></List>}
+          field={<List state={awards} updateState={updateAwards} title={"Awards"}></List>}
         ></EditField>
       ),
     };
@@ -118,15 +112,13 @@ const EditPage = () => {
       Object.assign(editFieldComponentsMap.current, {
         Projects: (
           <EditField
-            title={"Projects"}
-            field={<List state={projects} updateState={updateProjects}></List>}
+            field={<List state={projects} updateState={updateProjects} title={"Projects"}></List>}
           ></EditField>
         ),
         Languages: (
           <EditField
-            title={"Languages"}
             field={
-              <List state={languages} updateState={updateLanguages}></List>
+              <List state={languages} updateState={updateLanguages} title={"Languages"}></List>
             }
           ></EditField>
         ),
@@ -180,7 +172,7 @@ const EditPage = () => {
    * There are two sources that dispatch the event that causes the synchronization: an arrow or a button.
    */
   function syncNavigationState(nextEditFieldComponent: JSX.Element): void {
-    const editFieldName: string = nextEditFieldComponent.props.title;
+    const editFieldName: string = nextEditFieldComponent.props.field.props.title;
 
     // Update state
     updateEditField(nextEditFieldComponent);
@@ -258,7 +250,7 @@ const EditPage = () => {
    * Updates the navigation button when the navigation state changes.
    */
   useEffect(() => {
-    const editFieldName: string = currentEditField.props.title;
+    const editFieldName: string = currentEditField.props.field.props.title;
 
     document.getElementById(currentNavButton)?.classList.remove("btn-active");
     document

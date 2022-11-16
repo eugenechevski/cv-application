@@ -7,6 +7,7 @@ const List = (props: any) => {
   const state: IndexedLinkedList<string> = props.state;
   const updateState: (newState: IndexedLinkedList<string>) => void =
     props.updateState;
+  const title: string = props.title;
 
   /**
    * Functions for manual state changes:
@@ -39,23 +40,22 @@ const List = (props: any) => {
     updateInput(event.target.value);
   };
 
-  const acceptInput = () => {
-    if (isInputOn) {
-      addEntry(currentInput);
-      setInputMode(false);
-    } else if (currentModified !== null) {
-      editEntry(currentModified);
-      updateModified(null);
-    }
-
-    updateInput("");
-  };
-
   const cancelInput = () => {
-    updateInput("");
-    updateModified(null);
     setInputMode(false);
+    updateModified(null);
+    updateInput("");
   };
+
+  const acceptInput = () => {
+    if (currentModified === null) {
+      addEntry(currentInput);
+    } else {
+      editEntry(currentModified);
+    }
+    
+    cancelInput();
+  };
+
 
   const selectEntry = (entryId: string) => {
     document.getElementById(selectedEntryId)?.classList.remove("bg-secondary");
@@ -78,20 +78,25 @@ const List = (props: any) => {
   };
 
   return (
-    <div className="border border-blue-500 max-h-[50%] w-1/2 flex flex-col justify-center items-center gap-2">
-      <ul className="w-full overflow-scroll">
-        {([...state] as {i: number, node: LinkedNode<string>}[]).map((entry) => (
-          <li
-            key={entry.node.getId()}
-            className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary"
-            id={entry.node.getId()}
-            onClick={selectEntry.bind(null, entry.node.getId())}
-          >
-            {entry.node.getValue()}
-          </li>
-        ))}
+    <div className="w-full h-full flex flex-col justify-center items-center gap-2">
+      <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">
+        {title}
+      </h1>
+      <ul className="w-1/2 overflow-scroll">
+        {([...state] as { i: number; node: LinkedNode<string> }[]).map(
+          (entry) => (
+            <li
+              key={entry.node.getId()}
+              className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary"
+              id={entry.node.getId()}
+              onClick={selectEntry.bind(null, entry.node.getId())}
+            >
+              {entry.node.getValue()}
+            </li>
+          )
+        )}
       </ul>
-      {currentModified === null && !isInputOn ? (
+      {!isInputOn ? (
         <button
           className="btn btn-circle"
           onClick={setInputMode.bind(null, true)}
@@ -114,7 +119,7 @@ const List = (props: any) => {
           </button>
         </div>
       )}
-      {selectedEntryId !== "" ? (
+      {selectedEntryId !== "" && !isInputOn ? (
         <div className="flex gap-2">
           <button
             className="btn btn-circle"
@@ -125,19 +130,18 @@ const List = (props: any) => {
               className="text-xs"
             ></FontAwesomeIcon>
           </button>
-          {!isInputOn ? (
-            <button
-              className="btn btn-circle"
-              onClick={() => updateModified(state.getNode(selectedEntryId))}
-            >
-              <FontAwesomeIcon
-                icon={solid("pen")}
-                className="text-xs"
-              ></FontAwesomeIcon>
-            </button>
-          ) : (
-            <></>
-          )}
+          <button
+            className="btn btn-circle"
+            onClick={() => {
+              updateModified(state.getNode(selectedEntryId));
+              setInputMode(true);
+            }}
+          >
+            <FontAwesomeIcon
+              icon={solid("pen")}
+              className="text-xs"
+            ></FontAwesomeIcon>
+          </button>
           <button className="btn btn-circle" onClick={moveUp}>
             <FontAwesomeIcon
               icon={solid("arrow-up")}

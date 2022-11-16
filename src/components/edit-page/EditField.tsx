@@ -5,7 +5,7 @@ import { NavigationContext } from "Components/EditPage";
 
 
 const EditField = (props: any) => {
-  const { title, field } = props;
+  const { field } = props;
   const [selectPrevious, selectNext] = useContext(NavigationContext);
 
   return (
@@ -16,8 +16,7 @@ const EditField = (props: any) => {
             icon={solid("arrow-left")}
         ></FontAwesomeIcon>
       </button>
-      <div className="flex flex-col border border-red-500 justify-center items-center w-full h-full p-3 gap-3">
-        <h1 className="text-3xl my-3">{title}</h1>
+      <div className="border border-red-500 w-full h-full">
         {field}
       </div>
       <button className="btn btn-circle btn-secondary" onClick={selectNext}>
