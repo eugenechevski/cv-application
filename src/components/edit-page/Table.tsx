@@ -20,6 +20,14 @@ const Table = (props: any) => {
   const title: string = props.title;
 
   /**
+   * The prototype of a row is required for creating new instances.
+   */
+  const rowPrototype = useRef(null);
+  if (rowPrototype.current === null) {
+    rowPrototype.current = state.getHead().getValue().createNewInstance();
+  }
+
+  /**
    * States
    */
   const [, render] = useState({});
@@ -61,7 +69,7 @@ const Table = (props: any) => {
 
   const addRow = () => {
     state.appendNode(
-      LinkedNode(state.getHead().getValue().createNewInstance())
+      LinkedNode(rowPrototype.current.createNewInstance())
     );
     updateAllStates();
   };
@@ -99,7 +107,7 @@ const Table = (props: any) => {
               {[
                 state
                   .getHead()
-                  .getValue()
+                  ?.getValue()
                   .getAllFields()
                   .map((field: string) => <th key={uniqid()}>{field}</th>),
               ]}
@@ -170,7 +178,7 @@ const Table = (props: any) => {
           </button>
         )}
         {/* Modification buttons */}
-        { selectedTarget.selectedRow !== null && !isInputOn ? (
+        { selectedTarget.selectedRow !== null && !isInputOn && state.getLength() > 0 ? (
           <div className="flex gap-2">
             <button className="btn btn-circle" onClick={removeRow}>
               <FontAwesomeIcon

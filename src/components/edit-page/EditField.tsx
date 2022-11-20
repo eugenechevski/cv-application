@@ -10,16 +10,16 @@ const EditField = (props: any) => {
 
   return (
     <div className="flex w-full h-full justify-center items-center">
-      <button className="btn btn-circle btn-secondary" onClick={selectPrevious}>
+      <button className="btn btn-circle btn-secondary" onClick={() => selectPrevious()}>
         <FontAwesomeIcon
             className="text-4xl"
             icon={solid("arrow-left")}
         ></FontAwesomeIcon>
       </button>
-      <div className="border border-red-500 w-full h-full">
+      <div className="w-full h-full">
         {field}
       </div>
-      <button className="btn btn-circle btn-secondary" onClick={selectNext}>
+      <button className="btn btn-circle btn-secondary" onClick={() => selectNext()}>
         <FontAwesomeIcon
             className="text-4xl"
             icon={solid("arrow-right")}

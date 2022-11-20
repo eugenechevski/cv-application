@@ -8,13 +8,18 @@ import List from "./edit-page/List";
 import Table from "./edit-page/Table";
 import { TemplateNameContext } from "src/App";
 
+/**
+ * TODO:
+ *  Change the name of the props
+ */
+
 const NavigationContext = createContext([() => {}, () => {}]);
 
 const EditPage = () => {
   /**
    * Name of a resume's template
    */
-  const [templateName, setTemplateName] = useContext(TemplateNameContext);
+  const [templateName] = useContext(TemplateNameContext);
 
   /**
    * States of associated fields that can be edited.
@@ -68,85 +73,117 @@ const EditPage = () => {
    * Contains an object with the name of an editing field as a key and
    * an associated component as a value.
    */
-  const editFieldComponentsMap = useRef(null);
+  const componentsMap = useRef({
+    Name: (
+      <EditField
+        field={
+          <Input state={name} updateState={updateName} title={"Name"}></Input>
+        }
+      ></EditField>
+    ),
+    Title: (
+      <EditField
+        field={
+          <Input
+            state={title}
+            updateState={updateTitle}
+            title={"Title"}
+          ></Input>
+        }
+      ></EditField>
+    ),
+    Skills: (
+      <EditField
+        field={
+          <List
+            state={skills}
+            updateState={updateSkills}
+            title={"Skills"}
+          ></List>
+        }
+      ></EditField>
+    ),
+    Experience: (
+      <EditField
+        field={
+          <Table
+            state={experience}
+            updateState={updateExperience}
+            title={"Experience"}
+          ></Table>
+        }
+      ></EditField>
+    ),
+    Education: (
+      <EditField
+        field={
+          <Table
+            state={education}
+            updateState={updateEducation}
+            title={"Education"}
+          ></Table>
+        }
+      ></EditField>
+    ),
+    Awards: (
+      <EditField
+        field={
+          <List
+            state={awards}
+            updateState={updateAwards}
+            title={"Awards"}
+          ></List>
+        }
+      ></EditField>
+    ),
+  });
 
-  if (editFieldComponentsMap.current === null) {
-    editFieldComponentsMap.current = {
-      Name: (
-        <EditField
-          field={<Input state={name} updateState={updateName} title={"Name"}></Input>}
-        ></EditField>
-      ),
-      Title: (
-        <EditField
-          field={<Input state={title} updateState={updateTitle} title={"Title"}></Input>}
-        ></EditField>
-      ),
-      Skills: (
-        <EditField
-          field={<List state={skills} updateState={updateSkills} title={"Skills"}></List>}
-        ></EditField>
-      ),
-      Experience: (
+  if (templateName === "Simple") {
+    componentsMap.current = Object.assign(componentsMap.current, {
+      Projects: (
         <EditField
           field={
-            <Table state={experience} updateState={updateExperience} title={"Experience"}></Table>
+            <List
+              state={projects}
+              updateState={updateProjects}
+              title={"Projects"}
+            ></List>
           }
         ></EditField>
       ),
-      Education: (
+      Languages: (
         <EditField
           field={
-            <Table state={education} updateState={updateEducation} title={"Education"}></Table>
+            <List
+              state={languages}
+              updateState={updateLanguages}
+              title={"Languages"}
+            ></List>
           }
         ></EditField>
       ),
-      Awards: (
-        <EditField
-          field={<List state={awards} updateState={updateAwards} title={"Awards"}></List>}
-        ></EditField>
-      ),
-    };
-
-    if (templateName === "Simple") {
-      Object.assign(editFieldComponentsMap.current, {
-        Projects: (
-          <EditField
-            field={<List state={projects} updateState={updateProjects} title={"Projects"}></List>}
-          ></EditField>
-        ),
-        Languages: (
-          <EditField
-            field={
-              <List state={languages} updateState={updateLanguages} title={"Languages"}></List>
-            }
-          ></EditField>
-        ),
-      });
-    }
+    });
   }
 
   /**
    * An array of the names of the edit-field components.
    */
-  const editFieldNames = useRef(Object.keys(editFieldComponentsMap.current));
+  const componentsNames = useRef(Object.keys(componentsMap.current));
 
   /**
    * An array of the field-editing components.
    */
-  const editFieldComponentsList = useRef(
-    Object.values(editFieldComponentsMap.current)
-  );
+  const componentsList = useRef(Object.values(componentsMap.current));
 
   /**
    * An object that maps a name of a field-editing component to a the index of that component in the array.
    */
-  const editFieldComponentOrderMap = useRef(null);
+  const nameToIndexMap = useRef(null);
 
-  if (editFieldComponentOrderMap.current === null) {
-    editFieldComponentOrderMap.current = {};
-    for (let i = 0; i < editFieldNames.current.length; i += 1) {
-      editFieldComponentOrderMap.current[editFieldNames.current[i]] = i;
+  if (nameToIndexMap.current === null) {
+    nameToIndexMap.current = {};
+    for (let i = 0; i < componentsNames.current.length; i += 1) {
+      nameToIndexMap.current[componentsNames.current[i]] = i;
     }
   }
 
@@ -158,8 +195,8 @@ const EditPage = () => {
   /**
    * Tracks the currently displayed field-editing component.
    */
-  const [currentEditField, updateEditField] = useState(
-    editFieldComponentsMap.current["Name"]
+  const [currentComponent, setCurrentComponent] = useState(
+    componentsMap.current["Name"]
   );
 
   /**
@@ -171,12 +208,12 @@ const EditPage = () => {
    * Main navigation center that synchronizes all the state changes of the navigation variables in one render.
    * There are two sources that dispatch the event that causes the synchronization: an arrow or a button.
    */
-  function syncNavigationState(nextEditFieldComponent: JSX.Element): void {
-    const editFieldName: string = nextEditFieldComponent.props.field.props.title;
+  function syncNavigationState(nextComponent: JSX.Element): void {
+    const componentName: string = nextComponent.props.field.props.title;
 
     // Update state
-    updateEditField(nextEditFieldComponent);
-    updateCurrentOrder(editFieldComponentOrderMap.current[editFieldName]);
+    setCurrentComponent(nextComponent);
+    updateCurrentOrder(nameToIndexMap.current[componentName]);
   }
 
   /**
@@ -189,25 +226,21 @@ const EditPage = () => {
     if (currentOrder > 0) {
       nextOrder = currentOrder - 1;
     } else {
-      nextOrder = editFieldComponentsList.current.length - 1;
+      nextOrder = componentsList.current.length - 1;
     }
 
-    syncNavigationState(
-      editFieldComponentsList.current[nextOrder] as JSX.Element
-    );
+    syncNavigationState(componentsList.current[nextOrder] as JSX.Element);
   };
 
   const selectNext = () => {
     var nextOrder = 0;
-    if (currentOrder < editFieldComponentsList.current.length - 1) {
+    if (currentOrder < componentsList.current.length - 1) {
       nextOrder = currentOrder + 1;
     } else {
       nextOrder = 0;
     }
 
-    syncNavigationState(
-      editFieldComponentsList.current[nextOrder] as JSX.Element
-    );
+    syncNavigationState(componentsList.current[nextOrder] as JSX.Element);
   };
 
   /**
@@ -221,19 +254,20 @@ const EditPage = () => {
   if (navigationButtons.current === null) {
     navigationButtons.current = [];
 
-    for (let i = 0; i < editFieldNames.current.length; i++) {
-      let editFieldName = editFieldNames.current[i] as string;
+    for (let i = 0; i < componentsNames.current.length; i++) {
+      let componentName = componentsNames.current[i] as string;
       navigationButtons.current.push(
         <button
-          id={`${editFieldName}NavBtn`}
+          id={`${componentName}NavBtn`}
           key={uniqid()}
           className="btn"
-          onClick={syncNavigationState.bind(
-            this,
-            editFieldComponentsMap.current[editFieldName] as JSX.Element
-          )}
+          onClick={() =>
+            syncNavigationState(
+              componentsMap.current[componentName] as JSX.Element
+            )
+          }
         >
-          {editFieldName}
+          {componentName}
         </button>
       );
     }
@@ -250,27 +284,57 @@ const EditPage = () => {
    * Updates the navigation button when the navigation state changes.
    */
   useEffect(() => {
-    const editFieldName: string = currentEditField.props.field.props.title;
+    const componentName: string = currentComponent.props.field.props.title;
 
     document.getElementById(currentNavButton)?.classList.remove("btn-active");
     document
-      .getElementById(editFieldName + "NavBtn")
+      .getElementById(componentName + "NavBtn")
       ?.classList.add("btn-active");
-    updateNavButton(editFieldName + "NavBtn");
-  }, [currentEditField]);
+    updateNavButton(componentName + "NavBtn");
+  }, [currentComponent]);
+
+  useEffect(() => {
+    componentsMap.current["Title"] = (
+      <EditField
+        field={
+          <Input
+            state={title}
+            updateState={updateTitle}
+            title={"Title"}
+          ></Input>
+        }
+      ></EditField>
+    );
+    componentsList.current[nameToIndexMap.current["Title"]] =
+      componentsMap.current["Title"];
+    setCurrentComponent(componentsMap.current["Title"]);
+  }, [title]);
+
+  useEffect(() => {
+    componentsMap.current["Name"] = (
+      <EditField
+        field={
+          <Input state={name} updateState={updateName} title={"Name"}></Input>
+        }
+      ></EditField>
+    );
+    componentsList.current[nameToIndexMap.current["Name"]] =
+      componentsMap.current["Name"];
+    setCurrentComponent(componentsMap.current["Name"]);
+  }, [name]);
 
   return (
-    <div className="flex flex-col justify-center border border-purple-500 h-full w-1/2">
-      <div className="basis-2/3 border border-red-600 flex justify-center items-center h-2/3">
+    <div className="flex flex-col justify-center h-full w-3/4 md:w-1/2">
+      <div className="basis-2/3 flex justify-center items-center h-2/3">
         <NavigationContext.Provider value={[selectPrevious, selectNext]}>
-          {currentEditField}
+          {currentComponent}
         </NavigationContext.Provider>
       </div>
-      <div className="basis-1/6 border border-blue-500 flex flex-col justify-center items-center gap-3 h-1/6"> 
+      <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
         <button className="btn btn-primary w-1/3">Preview</button>
         <button className="btn btn-primary w-1/3">Export</button>
       </div>
-      <div className="basis-1/6 border border-green-500 flex justify-center items-center h-1/6">
+      <div className="basis-1/6 flex justify-center items-center h-1/6">
         <div className="pagination items-end">
           <div className="btn-group">{navigationButtons.current}</div>
         </div>
