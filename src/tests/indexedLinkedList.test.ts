@@ -86,4 +86,12 @@ it ('Tests the IndexedLinkedList', () => {
     expect(node2.getPrevious()).toBe(node1);
     expect(node2.getNext()).toBeUndefined();
 
+    // hasValue() tests
+    newList = IndexedLinkedList([1, 2, 3]);
+    expect(newList.hasValue(1)).toBe(true);
+    expect(newList.hasValue(2)).toBe(true);
+    expect(newList.hasValue(3)).toBe(true);
+    expect(newList.hasValue(4)).toBe(false);
+    expect(newList.hasValue(5)).toBe(false);
+    
 });

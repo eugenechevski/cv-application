@@ -21,6 +21,7 @@ declare type IndexedLinkedList<T> = {
     swapNodes: (node1: LinkedNode<T>, node2: LinkedNode<T>) => boolean,
     popLeft: () => LinkedNode<T>,
     pop: () => LinkedNode<T>,
+    hasValue: (value: T) => booleTan,
     [Symbol.iterator],
 }
 

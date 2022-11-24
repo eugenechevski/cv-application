@@ -293,6 +293,9 @@ const EditPage = () => {
     updateNavButton(componentName + "NavBtn");
   }, [currentComponent]);
 
+  /**
+   * Updates a component when the underlying data changes.
+   */
   useEffect(() => {
     componentsMap.current["Title"] = (
       <EditField
@@ -310,6 +313,9 @@ const EditPage = () => {
     setCurrentComponent(componentsMap.current["Title"]);
   }, [title]);
 
+  /**
+   * Updates a component when the underlying data changes.
+   */
   useEffect(() => {
     componentsMap.current["Name"] = (
       <EditField

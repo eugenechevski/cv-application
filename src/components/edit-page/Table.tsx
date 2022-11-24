@@ -6,8 +6,8 @@ import LinkedNode from "src/indexed-linked-list/LinkedNode";
 
 /**
  * TODO:
- *  Add validation of fields
- *  Add the date picker
+ *  Input validation
+ *  Date picker
  */
 
 const Table = (props: any) => {

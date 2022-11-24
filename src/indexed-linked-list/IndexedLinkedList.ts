@@ -161,6 +161,20 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
         return removeNode(thisTail?.getId());
     }
 
+    function hasValue(value: T): boolean {
+        const nodes = [...generateIteration()];
+        var has = false;
+
+        for (let i = 0; i < nodes.length; i += 1) {
+            if (nodes[i].node.getValue() === value) {
+                has = true;
+                break;
+            }
+        }
+
+        return has;
+    }
+
     function* generateIteration(): Generator<{i: number, node: LinkedNode<T>}> {
         let current = thisHead;
         let i = 0;
@@ -205,6 +219,7 @@ export default function IndexedLinkedList<T>(items?: T[]): IndexedLinkedList<T> 
         swapNodes,
         popLeft,
         pop,
+        hasValue,
         [Symbol.iterator]: generateIteration,
     }
 }
