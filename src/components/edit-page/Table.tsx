@@ -7,7 +7,6 @@ import LinkedNode from "src/indexed-linked-list/LinkedNode";
 /**
  * TODO:
  *  Input validation
- *  Date picker
  */
 
 const Table = (props: any) => {
@@ -68,9 +67,7 @@ const Table = (props: any) => {
   };
 
   const addRow = () => {
-    state.appendNode(
-      LinkedNode(rowPrototype.current.createNewInstance())
-    );
+    state.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
     updateAllStates();
   };
 
@@ -95,9 +92,28 @@ const Table = (props: any) => {
     updateAllStates();
   };
 
+  const openEditInput = () => {
+    setInputMode(true);
+
+    const row = (selectedTarget.selectedRow as LinkedNode<Row>).getValue();
+    var field = selectedTarget.selectedField;
+    field = field.slice(0, field.indexOf("-"));
+    setNewInput(row.getFieldValue(field));
+  };
+
+  const selectField = (newTarget: {
+    selectedField: string;
+    selectedRow: LinkedNode<Row>;
+  }) => {
+    setInputMode(false);
+    selectTarget(newTarget);
+  };
+
   return (
     <div className="flex flex-col h-full gap">
-      <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">{title}</h1>
+      <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">
+        {title}
+      </h1>
       <div className="overflow-scroll h-4/6 w-full">
         {/* Table */}
         <table className="table text-sm border border-neutral h-full w-full">
@@ -114,44 +130,47 @@ const Table = (props: any) => {
             </tr>
           </thead>
           <tbody>
-            {
-              ([...state] as {i: number, node: LinkedNode<Row>}[]).map(entry => (
+            {([...state] as { i: number; node: LinkedNode<Row> }[]).map(
+              (entry) => (
                 <tr
-                    id={entry.node.getId()}
-                    key={uniqid()}
-                    className={
-                      (entry.node === selectedTarget.selectedRow
-                        ? "border border-secondary"
-                        : "") + " cursor-pointer"
-                    }
-                  >
-                    <th className="border-r border-r-neutral">{entry.i + 1}</th>
-                    {[
-                      entry.node
-                        .getValue()
-                        .getAllFields()
-                        .map((field: string) => (
-                          <td
-                            className={
-                              (field + "-" + entry.node.getId() === selectedTarget.selectedField
-                                ? "bg-accent"
-                                : "") +
-                              " whitespace-normal cursor-pointer border-l border-l-neutral"
-                            }
-                            id={field + "-" + entry.node.getId()}
-                            key={uniqid()}
-                            onClick={selectTarget.bind(null, {
+                  id={entry.node.getId()}
+                  key={uniqid()}
+                  className={
+                    (entry.node === selectedTarget.selectedRow
+                      ? "border border-secondary"
+                      : "") + " cursor-pointer"
+                  }
+                >
+                  <th className="border-r border-r-neutral">{entry.i + 1}</th>
+                  {[
+                    entry.node
+                      .getValue()
+                      .getAllFields()
+                      .map((field: string) => (
+                        <td
+                          className={
+                            (field + "-" + entry.node.getId() ===
+                            selectedTarget.selectedField
+                              ? "bg-accent"
+                              : "") +
+                            " whitespace-normal cursor-pointer border-l border-l-neutral"
+                          }
+                          id={field + "-" + entry.node.getId()}
+                          key={uniqid()}
+                          onClick={() =>
+                            selectField({
                               selectedField: field + "-" + entry.node.getId(),
                               selectedRow: entry.node,
-                            })}
-                          >
-                            {entry.node.getValue().getFieldValue(field)}
-                          </td>
-                        )),
-                    ]}
-                  </tr>
-              ))
-            }
+                            })
+                          }
+                        >
+                          {entry.node.getValue().getFieldValue(field)}
+                        </td>
+                      )),
+                  ]}
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
@@ -160,7 +179,12 @@ const Table = (props: any) => {
         {isInputOn ? (
           <div className="flex justify-center gap-2">
             <input
-              type="text"
+              value={currentInput}
+              type={
+                selectedTarget.selectedField.startsWith("time")
+                  ? "date"
+                  : "text"
+              }
               placeholder="Type here"
               className="input input-bordered input-primary w-full max-w-xs"
               onChange={(e: any) => setNewInput(e.target.value)}
@@ -178,7 +202,9 @@ const Table = (props: any) => {
           </button>
         )}
         {/* Modification buttons */}
-        { selectedTarget.selectedRow !== null && !isInputOn && state.getLength() > 0 ? (
+        {selectedTarget.selectedRow !== null &&
+        !isInputOn &&
+        state.getLength() > 0 ? (
           <div className="flex gap-2">
             <button className="btn btn-circle" onClick={removeRow}>
               <FontAwesomeIcon
@@ -186,10 +212,7 @@ const Table = (props: any) => {
                 className="text-xs"
               ></FontAwesomeIcon>
             </button>
-            <button
-              className="btn btn-circle"
-              onClick={setInputMode.bind(null, true)}
-            >
+            <button className="btn btn-circle" onClick={() => openEditInput()}>
               <FontAwesomeIcon
                 icon={solid("pen")}
                 className="text-xs"

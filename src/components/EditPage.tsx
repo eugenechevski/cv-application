@@ -36,8 +36,8 @@ const EditPage = () => {
       Row({
         companyName: "ABC Company",
         jobTitle: "Manager",
-        timeFrom: Date.now().toString(),
-        timeTo: Date.now().toString(),
+        timeFrom: '2014-12-22',
+        timeTo: '2015-11-23',
         location: "NY City",
         description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
         interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
@@ -50,8 +50,8 @@ const EditPage = () => {
       Row({
         schoolName: "Harvard",
         degree: "Bachelor's",
-        timeFrom: Date.now().toString(),
-        timeTo: Date.now().toString(),
+        timeFrom: '2006-06-11',
+        timeTo: '2010-06-12',
         location: "Boston",
         description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
       interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
