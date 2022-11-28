@@ -7,6 +7,8 @@ import LinkedNode from "src/indexed-linked-list/LinkedNode";
 /**
  * TODO:
  *  Input validation
+ *  Closing input when switching between components
+ *
  */
 
 const Table = (props: any) => {
@@ -35,18 +37,27 @@ const Table = (props: any) => {
     updateState(state);
     forceUpdate();
   };
-  const [selectedTarget, selectTarget] = useState({
-    selectedRow: null,
+  const [selectedTarget, setSelectedTarget] = useState({
+    selectedRow: state.getHead(),
     selectedField: "",
   });
   const [isInputOn, setInputMode] = useState(false);
-  const [currentInput, setNewInput] = useState("");
+  const [currInput, setNewInput] = useState("");
+  const [isValidInput, setValidity] = useState(true);
 
   /**
    * Functions for operating on the state
    */
+  const rejectInput = () => {
+    setNewInput("");
+    setInputMode(false);
+  };
 
   const acceptInput = () => {
+    if (!isValidInput) {
+      return;
+    }
+
     (selectedTarget.selectedRow as LinkedNode<Row>)
       .getValue()
       .editField(
@@ -54,16 +65,10 @@ const Table = (props: any) => {
           0,
           selectedTarget.selectedField.indexOf("-")
         ),
-        currentInput
+        currInput
       );
-    setNewInput("");
-    setInputMode(false);
+    rejectInput();
     updateAllStates();
-  };
-
-  const rejectInput = () => {
-    setNewInput("");
-    setInputMode(false);
   };
 
   const addRow = () => {
@@ -92,7 +97,7 @@ const Table = (props: any) => {
     updateAllStates();
   };
 
-  const openEditInput = () => {
+  const handleOpenEditInput = () => {
     setInputMode(true);
 
     const row = (selectedTarget.selectedRow as LinkedNode<Row>).getValue();
@@ -101,12 +106,102 @@ const Table = (props: any) => {
     setNewInput(row.getFieldValue(field));
   };
 
-  const selectField = (newTarget: {
+  const handleSelectField = (newTarget: {
     selectedField: string;
     selectedRow: LinkedNode<Row>;
   }) => {
     setInputMode(false);
-    selectTarget(newTarget);
+    setSelectedTarget(newTarget);
+  };
+
+  const validateText = (
+    field: string,
+    target: HTMLInputElement,
+    newInput: string,
+    minChars?: number,
+    maxChars?: number
+  ): void => {
+    const fieldFormatted = field
+      .split(/(?<=[a-z])\.?(?=[A-Z])/)
+      .map((s: string) => s.toLowerCase())
+      .join(" ");
+
+    if (minChars !== undefined && newInput.length === minChars) {
+      setValidity(false);
+      setNewInput(newInput);
+      target.setCustomValidity(
+        `The length of a ${fieldFormatted} cannot be less than ${minChars + 1}.`
+      );
+    } else if (maxChars !== undefined && newInput.length > maxChars) {
+      setValidity(false);
+      target.setCustomValidity(
+        `The length of a ${fieldFormatted} cannot be greater than ${maxChars}.`
+      );
+    } else {
+      setValidity(true);
+      setNewInput(newInput);
+    }
+  };
+
+  const getDates = (field: string, inputDate: string): [dateFrom: Date, dateTo: Date] => {
+    const dateFromData = field === 'dateFrom' ? inputDate : selectedTarget.selectedRow.getValue().getFieldValue('dateFrom');
+    const dateToData = field === 'dateTo' ? inputDate : selectedTarget.selectedRow.getValue().getFieldValue('dateTo');
+  
+    const [yearFrom, monthFrom, dayFrom] = dateFromData
+      .split("-")
+      .map((t: string) => Number(t));
+    const dateFrom = new Date();
+    dateFrom.setFullYear(yearFrom, monthFrom - 1, dayFrom);
+  
+    const [yearTo, monthTo, dayTo] = dateToData
+      .split("-")
+      .map((t: string) => Number(t));
+    const dateTo = new Date();
+    dateTo.setFullYear(yearTo, monthTo - 1, dayTo);
+
+    return [dateFrom, dateTo];
+  }
+
+  // TODO
+  const validateDate = (field: string, inputDate: string, target: HTMLInputElement): void => {
+    if (field === 'dateFrom' && inputDate === '') {
+      setValidity(false);
+      target.setCustomValidity('The starting date must specified.');
+      return;
+    }
+
+    const [dateFrom, dateTo] = getDates(field, inputDate);
+
+    if (dateFrom > dateTo) {
+      setValidity(false);
+      target.setCustomValidity(
+        "The starting date cannot be after the ending date."
+      );
+    } else {
+      setValidity(true);
+    }
+    setNewInput(inputDate);
+  };
+
+  const handleNewInput = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const newInput = target.value;
+    let field = selectedTarget.selectedField;
+    field = field.slice(0, field.indexOf("-"));
+
+    if (
+      field === "companyName" ||
+      field === "jobTitle" ||
+      field === "location" ||
+      field === "schoolName" ||
+      field === "degree"
+    ) {
+      validateText(field, target, newInput, 0, 30);
+    } else if (field === "dateFrom" || field === "dateTo") {
+      validateDate(field, newInput, target);
+    } else if (field === "description") {
+      validateText(field, target, newInput, 0, 100);
+    }
   };
 
   return (
@@ -158,7 +253,7 @@ const Table = (props: any) => {
                           id={field + "-" + entry.node.getId()}
                           key={uniqid()}
                           onClick={() =>
-                            selectField({
+                            handleSelectField({
                               selectedField: field + "-" + entry.node.getId(),
                               selectedRow: entry.node,
                             })
@@ -179,15 +274,22 @@ const Table = (props: any) => {
         {isInputOn ? (
           <div className="flex justify-center gap-2">
             <input
-              value={currentInput}
+              max={(() => {
+                let today = new Date();
+                return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+              })()}
+              value={currInput}
               type={
-                selectedTarget.selectedField.startsWith("time")
+                selectedTarget.selectedField.startsWith("date")
                   ? "date"
                   : "text"
               }
               placeholder="Type here"
-              className="input input-bordered input-primary w-full max-w-xs"
-              onChange={(e: any) => setNewInput(e.target.value)}
+              className={
+                "input input-bordered w-full max-w-xs" +
+                (!isValidInput ? " input-error" : " input-primary")
+              }
+              onChange={(e: any) => handleNewInput(e)}
             />
             <button className="btn btn-circle" onClick={acceptInput}>
               <FontAwesomeIcon icon={solid("check")}></FontAwesomeIcon>
@@ -212,7 +314,10 @@ const Table = (props: any) => {
                 className="text-xs"
               ></FontAwesomeIcon>
             </button>
-            <button className="btn btn-circle" onClick={() => openEditInput()}>
+            <button
+              className="btn btn-circle"
+              onClick={() => handleOpenEditInput()}
+            >
               <FontAwesomeIcon
                 icon={solid("pen")}
                 className="text-xs"

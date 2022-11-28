@@ -36,12 +36,10 @@ const EditPage = () => {
       Row({
         companyName: "ABC Company",
         jobTitle: "Manager",
-        timeFrom: '2014-12-22',
-        timeTo: '2015-11-23',
+        dateFrom: "2014-12-22",
+        dateTo: "2015-11-23",
         location: "NY City",
-        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
-        interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
-        lacinia felis eu finibus.`,
+        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac interdum nisi. Sed inconsequatmi.`,
       }),
     ])
   );
@@ -50,12 +48,10 @@ const EditPage = () => {
       Row({
         schoolName: "Harvard",
         degree: "Bachelor's",
-        timeFrom: '2006-06-11',
-        timeTo: '2010-06-12',
+        dateFrom: "2006-06-11",
+        dateTo: "2010-06-12",
         location: "Boston",
-        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac
-      interdum nisi. Sed in consequat mi. Sed in consequat mi, sed pulvinar
-      lacinia felis eu finibus.`,
+        description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac interdum nisi. Sed inconsequatmi.`,
       }),
     ])
   );

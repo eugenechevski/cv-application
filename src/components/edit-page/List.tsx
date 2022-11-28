@@ -25,8 +25,8 @@ const List = (props: any) => {
 
   const [isValidInput, setValidity] = useState(true);
   const [isInputOn, setInputMode] = useState(false);
-  const [currentModified, updateModified] = useState(null);
-  const [currentInput, updateInput] = useState("New " + itemType);
+  const [currModifiedItem, setModifiedItem] = useState(null);
+  const [currInput, setInput] = useState("New " + itemType);
   const [selectedItemId, setSelectedItemId] = useState("");
 
   const updateAllStates = () => {
@@ -46,11 +46,11 @@ const List = (props: any) => {
   };
 
   const editItem = (item: LinkedNode<string>) => {
-    item.setValue(currentInput);
+    item.setValue(currInput);
     updateState(state);
   };
 
-  const setNewInput = (e: Event) => {
+  const handleNewInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
 
     if (target.value.length === 0) {
@@ -68,13 +68,13 @@ const List = (props: any) => {
       setValidity(true);
     }
 
-    updateInput(target.value);
+    setInput(target.value);
   };
 
   const verifyInput = () => {
     var isValid = isValidInput;
     
-    if (isValid && state.hasValue(currentInput)) {
+    if (isValid && state.hasValue(currInput)) {
       isValid = false;
       setValidity(false);
       document
@@ -87,10 +87,10 @@ const List = (props: any) => {
     return isValid;
   };
 
-  const cancelInput = () => {
+  const rejectInput = () => {
     setInputMode(false);
-    updateModified(null);
-    updateInput(`New ${itemType}`);
+    setModifiedItem(null);
+    setInput(`New ${itemType}`);
   };
 
   const acceptInput = () => {
@@ -98,16 +98,16 @@ const List = (props: any) => {
       return;
     }
 
-    if (currentModified === null) {
-      addItem(currentInput);
+    if (currModifiedItem === null) {
+      addItem(currInput);
     } else {
-      editItem(currentModified);
+      editItem(currModifiedItem);
     }
 
-    cancelInput();
+    rejectInput();
   };
 
-  const selectItem = (itemId: string) => {
+  const handleSelectItem = (itemId: string) => {
     document.getElementById(selectedItemId)?.classList.remove("bg-secondary");
     document.getElementById(itemId)?.classList.add("bg-secondary");
     setSelectedItemId(itemId);
@@ -137,7 +137,7 @@ const List = (props: any) => {
               key={item.node.getId()}
               className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary"
               id={item.node.getId()}
-              onClick={() => selectItem(item.node.getId())}
+              onClick={() => handleSelectItem(item.node.getId())}
             >
               {item.node.getValue()}
             </li>
@@ -154,19 +154,19 @@ const List = (props: any) => {
       ) : (
         <div className="flex justify-center gap-2">
           <input
-            value={currentInput}
+            value={currInput}
             type="text"
             placeholder="Type here"
             className={
               "input input-bordered w-full max-w-xs" +
               (!isValidInput ? " input-error" : "")
             }
-            onChange={(e: any) => setNewInput(e)}
+            onChange={(e: any) => handleNewInput(e)}
           />
           <button className="btn btn-circle" onClick={acceptInput}>
             <FontAwesomeIcon icon={solid("check")}></FontAwesomeIcon>
           </button>
-          <button className="btn btn-circle" onClick={cancelInput}>
+          <button className="btn btn-circle" onClick={rejectInput}>
             <FontAwesomeIcon icon={solid("xmark")}></FontAwesomeIcon>
           </button>
         </div>
@@ -185,9 +185,9 @@ const List = (props: any) => {
           <button
             className="btn btn-circle"
             onClick={() => {
-              updateModified(state.getNode(selectedItemId));
+              setModifiedItem(state.getNode(selectedItemId));
               setInputMode(true);
-              updateInput(state.getNode(selectedItemId).getValue());
+              setInput(state.getNode(selectedItemId).getValue());
             }}
           >
             <FontAwesomeIcon

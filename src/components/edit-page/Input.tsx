@@ -4,7 +4,7 @@ const Input = (props: any) => {
   const { state, updateState, title } = props;
   const [isValidInput, setValidity] = useState(false);
 
-  const updateInput = (e: Event) => {
+  const handleNewInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
 
     if (target.value.length > 30) {
@@ -27,7 +27,7 @@ const Input = (props: any) => {
       <input
         value={state}
         type="text"
-        onChange={(e: any) => updateInput(e)}
+        onChange={(e: any) => handleNewInput(e)}
         className={"input input-bordered w-full max-w-xs" + (!isValidInput ? ' input-error' : '')}
       />
     </div>
