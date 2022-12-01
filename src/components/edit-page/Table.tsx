@@ -1,15 +1,8 @@
 import uniqid from "uniqid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import LinkedNode from "src/indexed-linked-list/LinkedNode";
-
-/**
- * TODO:
- *  Input validation
- *  Closing input when switching between components
- *
- */
 
 const Table = (props: any) => {
   /**
@@ -72,8 +65,10 @@ const Table = (props: any) => {
   };
 
   const addRow = () => {
-    state.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
-    updateAllStates();
+    if (state.getLength() < 10) {
+      state.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
+      updateAllStates();
+    }
   };
 
   const removeRow = () => {
@@ -143,16 +138,25 @@ const Table = (props: any) => {
     }
   };
 
-  const getDates = (field: string, inputDate: string): [dateFrom: Date, dateTo: Date] => {
-    const dateFromData = field === 'dateFrom' ? inputDate : selectedTarget.selectedRow.getValue().getFieldValue('dateFrom');
-    const dateToData = field === 'dateTo' ? inputDate : selectedTarget.selectedRow.getValue().getFieldValue('dateTo');
-  
+  const getDates = (
+    field: string,
+    inputDate: string
+  ): [dateFrom: Date, dateTo: Date] => {
+    const dateFromData =
+      field === "dateFrom"
+        ? inputDate
+        : selectedTarget.selectedRow.getValue().getFieldValue("dateFrom");
+    const dateToData =
+      field === "dateTo"
+        ? inputDate
+        : selectedTarget.selectedRow.getValue().getFieldValue("dateTo");
+
     const [yearFrom, monthFrom, dayFrom] = dateFromData
       .split("-")
       .map((t: string) => Number(t));
     const dateFrom = new Date();
     dateFrom.setFullYear(yearFrom, monthFrom - 1, dayFrom);
-  
+
     const [yearTo, monthTo, dayTo] = dateToData
       .split("-")
       .map((t: string) => Number(t));
@@ -160,13 +164,16 @@ const Table = (props: any) => {
     dateTo.setFullYear(yearTo, monthTo - 1, dayTo);
 
     return [dateFrom, dateTo];
-  }
+  };
 
-  // TODO
-  const validateDate = (field: string, inputDate: string, target: HTMLInputElement): void => {
-    if (field === 'dateFrom' && inputDate === '') {
+  const validateDate = (
+    field: string,
+    inputDate: string,
+    target: HTMLInputElement
+  ): void => {
+    if (field === "dateFrom" && inputDate === "") {
       setValidity(false);
-      target.setCustomValidity('The starting date must specified.');
+      target.setCustomValidity("The starting date must specified.");
       return;
     }
 
@@ -203,6 +210,12 @@ const Table = (props: any) => {
       validateText(field, target, newInput, 0, 100);
     }
   };
+
+  useEffect(() => {
+    if (selectedTarget.selectedField !== "") {
+      document.getElementById(selectedTarget.selectedField)?.focus();
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-full gap" key={uniqid()}>
@@ -259,7 +272,14 @@ const Table = (props: any) => {
                             })
                           }
                         >
-                          {entry.node.getValue().getFieldValue(field)}
+                          <button
+                            autoFocus={
+                              selectedTarget.selectedField ===
+                              field + "-" + entry.node.getId()
+                            }
+                          >
+                            {entry.node.getValue().getFieldValue(field)}
+                          </button>
                         </td>
                       )),
                   ]}
@@ -274,9 +294,12 @@ const Table = (props: any) => {
         {isInputOn ? (
           <div className="flex justify-center gap-2">
             <input
+              autoFocus={true}
               max={(() => {
                 let today = new Date();
-                return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+                return `${today.getFullYear()}-${
+                  today.getMonth() + 1
+                }-${today.getDate()}`;
               })()}
               value={currInput}
               type={

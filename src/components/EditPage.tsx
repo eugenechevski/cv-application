@@ -293,6 +293,8 @@ const EditPage = () => {
     updateNavButton(componentName + "NavBtn");
   }, [currentComponent]);
 
+  console.log('page');
+
   return (
     <div className="flex flex-col justify-center h-full w-3/4 md:w-1/2">
       <div className="basis-2/3 flex justify-center items-center h-2/3">
