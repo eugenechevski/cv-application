@@ -205,7 +205,7 @@ const Table = (props: any) => {
   };
 
   return (
-    <div className="flex flex-col h-full gap">
+    <div className="flex flex-col h-full gap" key={uniqid()}>
       <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">
         {title}
       </h1>

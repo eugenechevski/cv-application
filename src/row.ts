@@ -78,7 +78,7 @@ export default function Row(initFields: {[index: string]: string}): Row {
         var currentFields = Object.keys(thisFields);
 
         for (var i = 0; i < currentFields.length; i++) {
-            initFieldsOfNewInstance[currentFields[i]] = '';
+            initFieldsOfNewInstance[currentFields[i]] = thisFields[currentFields[i]];
         }
 
         return Row(initFieldsOfNewInstance);

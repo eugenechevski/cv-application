@@ -25,8 +25,8 @@ const EditPage = () => {
    * States of associated fields that can be edited.
    */
 
-  const [name, updateName] = useState("John Doe");
-  const [title, updateTitle] = useState("Lorem ipsum dolor sit amet");
+  const [name, updateName] = useState({current: "John Doe"});
+  const [title, updateTitle] = useState({current: "Lorem ipsum dolor sit amet"});
   const [skills, updateSkills] = useState(
     IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
@@ -69,96 +69,100 @@ const EditPage = () => {
    * Contains an object with the name of an editing field as a key and
    * an associated component as a value.
    */
-  const componentsMap = useRef({
-    Name: (
-      <EditField
-        field={
-          <Input state={name} updateState={updateName} title={"Name"}></Input>
-        }
-      ></EditField>
-    ),
-    Title: (
-      <EditField
-        field={
-          <Input
-            state={title}
-            updateState={updateTitle}
-            title={"Title"}
-          ></Input>
-        }
-      ></EditField>
-    ),
-    Skills: (
-      <EditField
-        field={
-          <List
-            state={skills}
-            updateState={updateSkills}
-            title={"Skills"}
-          ></List>
-        }
-      ></EditField>
-    ),
-    Experience: (
-      <EditField
-        field={
-          <Table
-            state={experience}
-            updateState={updateExperience}
-            title={"Experience"}
-          ></Table>
-        }
-      ></EditField>
-    ),
-    Education: (
-      <EditField
-        field={
-          <Table
-            state={education}
-            updateState={updateEducation}
-            title={"Education"}
-          ></Table>
-        }
-      ></EditField>
-    ),
-    Awards: (
-      <EditField
-        field={
-          <List
-            state={awards}
-            updateState={updateAwards}
-            title={"Awards"}
-          ></List>
-        }
-      ></EditField>
-    ),
-  });
+  const componentsMap = useRef(null);
 
-  if (templateName === "Simple") {
-    componentsMap.current = Object.assign(componentsMap.current, {
-      Projects: (
+  if (componentsMap.current === null) {
+    componentsMap.current = {
+      Name: (
+        <EditField
+          field={
+            <Input state={name} updateState={updateName} title={"Name"}></Input>
+          }
+        ></EditField>
+      ),
+      Title: (
+        <EditField
+          field={
+            <Input
+              state={title}
+              updateState={updateTitle}
+              title={"Title"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      Skills: (
         <EditField
           field={
             <List
-              state={projects}
-              updateState={updateProjects}
-              title={"Projects"}
+              state={skills}
+              updateState={updateSkills}
+              title={"Skills"}
             ></List>
           }
         ></EditField>
       ),
-      Languages: (
+      Experience: (
+        <EditField
+          field={
+            <Table
+              state={experience}
+              updateState={updateExperience}
+              title={"Experience"}
+            ></Table>
+          }
+        ></EditField>
+      ),
+      Education: (
+        <EditField
+          field={
+            <Table
+              state={education}
+              updateState={updateEducation}
+              title={"Education"}
+            ></Table>
+          }
+        ></EditField>
+      ),
+      Awards: (
         <EditField
           field={
             <List
-              state={languages}
-              updateState={updateLanguages}
-              title={"Languages"}
+              state={awards}
+              updateState={updateAwards}
+              title={"Awards"}
             ></List>
           }
         ></EditField>
       ),
-    });
+    }
+
+    if (templateName !== "Simple") {
+      componentsMap.current = Object.assign(componentsMap.current, {
+        Projects: (
+          <EditField
+            field={
+              <List
+                state={projects}
+                updateState={updateProjects}
+                title={"Projects"}
+              ></List>
+            }
+          ></EditField>
+        ),
+        Languages: (
+          <EditField
+            field={
+              <List
+                state={languages}
+                updateState={updateLanguages}
+                title={"Languages"}
+              ></List>
+            }
+          ></EditField>
+        ),
+      });
+    }
   }
 
   /**
@@ -288,42 +292,6 @@ const EditPage = () => {
       ?.classList.add("btn-active");
     updateNavButton(componentName + "NavBtn");
   }, [currentComponent]);
-
-  /**
-   * Updates a component when the underlying data changes.
-   */
-  useEffect(() => {
-    componentsMap.current["Title"] = (
-      <EditField
-        field={
-          <Input
-            state={title}
-            updateState={updateTitle}
-            title={"Title"}
-          ></Input>
-        }
-      ></EditField>
-    );
-    componentsList.current[nameToIndexMap.current["Title"]] =
-      componentsMap.current["Title"];
-    setCurrentComponent(componentsMap.current["Title"]);
-  }, [title]);
-
-  /**
-   * Updates a component when the underlying data changes.
-   */
-  useEffect(() => {
-    componentsMap.current["Name"] = (
-      <EditField
-        field={
-          <Input state={name} updateState={updateName} title={"Name"}></Input>
-        }
-      ></EditField>
-    );
-    componentsList.current[nameToIndexMap.current["Name"]] =
-      componentsMap.current["Name"];
-    setCurrentComponent(componentsMap.current["Name"]);
-  }, [name]);
 
   return (
     <div className="flex flex-col justify-center h-full w-3/4 md:w-1/2">
