@@ -224,7 +224,7 @@ const Table = (props: any) => {
       </h1>
       <div className="overflow-scroll h-4/6 w-full">
         {/* Table */}
-        <table className="table text-sm border border-neutral h-full w-full">
+        <table className="table text-xs border border-neutral h-full w-full">
           <thead>
             <tr>
               <th></th>

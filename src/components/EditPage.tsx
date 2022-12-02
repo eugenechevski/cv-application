@@ -260,7 +260,7 @@ const EditPage = () => {
         <button
           id={`${componentName}NavBtn`}
           key={uniqid()}
-          className="btn"
+          className="btn text-sm"
           onClick={() =>
             syncNavigationState(
               componentsMap.current[componentName] as JSX.Element
@@ -296,20 +296,29 @@ const EditPage = () => {
   console.log('page');
 
   return (
-    <div className="flex flex-col justify-center h-full w-3/4 md:w-1/2">
+    <div className="flex flex-col justify-center h-full w-full">
       <div className="basis-2/3 flex justify-center items-center h-2/3">
         <NavigationContext.Provider value={[selectPrevious, selectNext]}>
           {currentComponent}
         </NavigationContext.Provider>
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
-        <button className="btn btn-primary w-1/3">Preview</button>
-        <button className="btn btn-primary w-1/3">Export</button>
+        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">Preview</button>
+        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">Export</button>
       </div>
-      <div className="basis-1/6 flex justify-center items-center h-1/6">
-        <div className="pagination items-end">
-          <div className="btn-group">{navigationButtons.current}</div>
-        </div>
+      <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
+        {window.screen.availWidth < 768 ? (
+          <div className="dropdown dropdown-top dropdown-hover">
+            <label tabIndex={0} className="btn m-1 btn-primary w-full">{currentComponent.props.field.props.title}</label>
+            <ul tabIndex={0} className="dropdown-content menu rounded-box">
+              {navigationButtons.current.map(buttonEl => <li key={uniqid()}>{buttonEl}</li>)}
+            </ul>
+          </div>
+        ) : (
+          <div className="pagination items-end">
+            <div className="btn-group">{navigationButtons.current}</div>
+          </div>
+        )}
       </div>
     </div>
   );
