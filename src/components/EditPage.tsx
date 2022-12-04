@@ -7,6 +7,9 @@ import Input from "./edit-page/Input";
 import List from "./edit-page/List";
 import Table from "./edit-page/Table";
 import { TemplateNameContext } from "src/App";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+
 
 /**
  * TODO:
@@ -308,8 +311,22 @@ const EditPage = () => {
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
         {window.screen.availWidth < 768 ? (
-          <div className="dropdown dropdown-top dropdown-hover">
-            <label tabIndex={0} className="btn m-1 btn-primary w-full">{currentComponent.props.field.props.title}</label>
+          <div className="dropdown dropdown-top w-1/2 dropdown-end">
+            <div className="flex justify-center items-center gap-2">
+              <button className="btn btn-circle btn-secondary" onClick={() => selectPrevious()}>
+                <FontAwesomeIcon
+                    className="text-4xl"
+                    icon={solid("arrow-left")}
+                ></FontAwesomeIcon>
+              </button>
+              <label tabIndex={0} className="btn btn-primary w-full">{currentComponent.props.field.props.title}</label>
+              <button className="btn btn-circle btn-secondary" onClick={() => selectNext()}>
+                <FontAwesomeIcon
+                    className="text-4xl"
+                    icon={solid("arrow-right")}
+                ></FontAwesomeIcon>
+              </button>
+            </div>
             <ul tabIndex={0} className="dropdown-content menu rounded-box">
               {navigationButtons.current.map(buttonEl => <li key={uniqid()}>{buttonEl}</li>)}
             </ul>

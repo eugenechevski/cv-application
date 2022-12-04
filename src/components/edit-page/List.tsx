@@ -130,12 +130,12 @@ const List = (props: any) => {
       <h1 className="text-3xl h-1/6 w-full flex items-center justify-center">
         {title}
       </h1>
-      <ul className="w-1/2 overflow-scroll">
+      <ul className="w-full overflow-scroll">
         {([...state] as { i: number; node: LinkedNode<string> }[]).map(
           (item) => (
             <li
               key={item.node.getId()}
-              className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary"
+              className="cursor-pointer p-3 flex justify-center items-center border-b border-b-primary overflow-scroll"
               id={item.node.getId()}
               onClick={() => handleSelectItem(item.node.getId())}
             >
