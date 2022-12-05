@@ -8,8 +8,6 @@ const EditField = (props: any) => {
   const { field } = props;
   const [selectPrevious, selectNext] = useContext(NavigationContext);
 
-  console.log('field');
-
   return (
     <div className="flex w-full h-full justify-center items-center" key={uniqid()}>
       <div className="w-full h-full basis-1/6 justify-center items-center hidden sm:flex">

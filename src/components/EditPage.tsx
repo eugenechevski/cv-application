@@ -296,8 +296,6 @@ const EditPage = () => {
     updateNavButton(componentName + "NavBtn");
   }, [currentComponent]);
 
-  console.log('page');
-
   return (
     <div className="flex flex-col justify-center h-full w-full">
       <div className="basis-2/3 flex justify-center items-center h-2/3">
@@ -306,7 +304,6 @@ const EditPage = () => {
         </NavigationContext.Provider>
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
-        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">Preview</button>
         <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">Export</button>
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
