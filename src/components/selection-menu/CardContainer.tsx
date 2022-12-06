@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useRef } from "react";
-import Card from "./Card";
+import Card from "Components/selection-menu/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   solid,

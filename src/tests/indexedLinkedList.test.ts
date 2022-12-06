@@ -1,5 +1,5 @@
-import IndexedLinkedList from "src/indexed-linked-list/IndexedLinkedList";
-import LinkedNode from "src/indexed-linked-list/LinkedNode";
+import IndexedLinkedList from "DataAPI/IndexedLinkedList";
+import LinkedNode from "DataAPI/LinkedNode";
 
 it ('Tests the IndexedLinkedList', () => {
     const emptyList = IndexedLinkedList();

@@ -1,17 +1,12 @@
-import LinkedNode from "src/indexed-linked-list/LinkedNode";
+import LinkedNode from "DataAPI/LinkedNode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState, useCallback } from "react";
 
-/**
- * TODO:
- *  Fix same input element problem
- */
-
 const List = (props: any) => {
-  const state: IndexedLinkedList<string> = props.state;
-  const updateState: (newState: IndexedLinkedList<string>) => void =
-    props.updateState;
+  const data: IndexedLinkedList<string> = props.data;
+  const updateData: (newData: IndexedLinkedList<string>) => void =
+    props.updateData;
   const title: string = props.title;
 
   const itemType = title === "Skills" ? "skill" : "award";
@@ -30,24 +25,24 @@ const List = (props: any) => {
   const [selectedItemId, setSelectedItemId] = useState("");
 
   const updateAllStates = () => {
-    updateState(state);
+    updateData(data);
     forceUpdate();
   };
 
   const addItem = (newItem: string) => {
-    state.appendNode(LinkedNode(newItem));
-    updateState(state);
+    data.appendNode(LinkedNode(newItem));
+    updateData(data);
   };
 
   const removeItem = (itemId: string) => {
-    state.removeNode(itemId);
+    data.removeNode(itemId);
     setSelectedItemId("");
     updateAllStates();
   };
 
   const editItem = (item: LinkedNode<string>) => {
     item.setValue(currInput);
-    updateState(state);
+    updateData(data);
   };
 
   const handleNewInput = (e: Event) => {
@@ -74,7 +69,7 @@ const List = (props: any) => {
   const verifyInput = () => {
     var isValid = isValidInput;
     
-    if (isValid && state.hasValue(currInput)) {
+    if (isValid && data.hasValue(currInput)) {
       isValid = false;
       setValidity(false);
       document
@@ -114,14 +109,14 @@ const List = (props: any) => {
   };
 
   const moveUp = () => {
-    const currentNode = state.getNode(selectedItemId);
-    state.swapNodes(currentNode, currentNode.getPrevious());
+    const currentNode = data.getNode(selectedItemId);
+    data.swapNodes(currentNode, currentNode.getPrevious());
     updateAllStates();
   };
 
   const moveDown = () => {
-    const currentNode = state.getNode(selectedItemId);
-    state.swapNodes(currentNode.getNext(), currentNode);
+    const currentNode = data.getNode(selectedItemId);
+    data.swapNodes(currentNode.getNext(), currentNode);
     updateAllStates();
   };
 
@@ -131,7 +126,7 @@ const List = (props: any) => {
         {title}
       </h1>
       <ul className="w-full overflow-scroll">
-        {([...state] as { i: number; node: LinkedNode<string> }[]).map(
+        {([...data] as { i: number; node: LinkedNode<string> }[]).map(
           (item) => (
             <li
               key={item.node.getId()}
@@ -171,7 +166,7 @@ const List = (props: any) => {
           </button>
         </div>
       )}
-      {selectedItemId !== "" && !isInputOn && state.getLength() > 0 ? (
+      {selectedItemId !== "" && !isInputOn && data.getLength() > 0 ? (
         <div className="flex gap-2">
           <button
             className="btn btn-circle"
@@ -185,9 +180,9 @@ const List = (props: any) => {
           <button
             className="btn btn-circle"
             onClick={() => {
-              setModifiedItem(state.getNode(selectedItemId));
+              setModifiedItem(data.getNode(selectedItemId));
               setInputMode(true);
-              setInput(state.getNode(selectedItemId).getValue());
+              setInput(data.getNode(selectedItemId).getValue());
             }}
           >
             <FontAwesomeIcon

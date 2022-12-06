@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SelectionContext } from "./CardContainer";
+import { SelectionContext } from "Components/selection-menu/CardContainer";
 
 const Card = (props: any) => {
   const setSelectedCard = useContext(SelectionContext);

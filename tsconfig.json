@@ -23,6 +23,8 @@
     "jsx": "react-jsx",
     "paths": {
       "Components/*": ["src/components/*"],
+      "DataAPI/*": ["src/data-api/*"],
+      "Helpers/*": ["src/helpers/*"],
     }
   },
   "include": [

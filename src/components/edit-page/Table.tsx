@@ -2,15 +2,15 @@ import uniqid from "uniqid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState, useCallback, useRef, useEffect } from "react";
-import LinkedNode from "src/indexed-linked-list/LinkedNode";
+import LinkedNode from "DataAPI/LinkedNode";
 
 const Table = (props: any) => {
   /**
    * Props
    */
-  const state: IndexedLinkedList<Row> = props.state;
-  const updateState: (newState: IndexedLinkedList<Row>) => void =
-    props.updateState;
+  const data: IndexedLinkedList<Row> = props.data;
+  const updateData: (newState: IndexedLinkedList<Row>) => void =
+    props.updateData;
   const title: string = props.title;
 
   /**
@@ -18,7 +18,7 @@ const Table = (props: any) => {
    */
   const rowPrototype = useRef(null);
   if (rowPrototype.current === null) {
-    rowPrototype.current = state.getHead().getValue().createNewInstance();
+    rowPrototype.current = data.getHead().getValue().createNewInstance();
   }
 
   /**
@@ -27,11 +27,11 @@ const Table = (props: any) => {
   const [, render] = useState({});
   const forceUpdate = useCallback(() => render({}), []);
   const updateAllStates = () => {
-    updateState(state);
+    updateData(data);
     forceUpdate();
   };
   const [selectedTarget, setSelectedTarget] = useState({
-    selectedRow: state.getHead(),
+    selectedRow: data.getHead(),
     selectedField: "",
   });
   const [isInputOn, setInputMode] = useState(false);
@@ -65,19 +65,19 @@ const Table = (props: any) => {
   };
 
   const addRow = () => {
-    if (state.getLength() < 10) {
-      state.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
+    if (data.getLength() < 10) {
+      data.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
       updateAllStates();
     }
   };
 
   const removeRow = () => {
-    state.removeNode((selectedTarget.selectedRow as LinkedNode<Row>).getId());
+    data.removeNode((selectedTarget.selectedRow as LinkedNode<Row>).getId());
     updateAllStates();
   };
 
   const moveRowUp = () => {
-    state.swapNodes(
+    data.swapNodes(
       (selectedTarget.selectedRow as LinkedNode<Row>).getPrevious(),
       selectedTarget.selectedRow as LinkedNode<Row>
     );
@@ -85,7 +85,7 @@ const Table = (props: any) => {
   };
 
   const moveRowDown = () => {
-    state.swapNodes(
+    data.swapNodes(
       selectedTarget.selectedRow as LinkedNode<Row>,
       (selectedTarget.selectedRow as LinkedNode<Row>).getNext()
     );
@@ -229,7 +229,7 @@ const Table = (props: any) => {
             <tr>
               <th></th>
               {[
-                state
+                data
                   .getHead()
                   ?.getValue()
                   .getAllFields()
@@ -238,7 +238,7 @@ const Table = (props: any) => {
             </tr>
           </thead>
           <tbody>
-            {([...state] as { i: number; node: LinkedNode<Row> }[]).map(
+            {([...data] as { i: number; node: LinkedNode<Row> }[]).map(
               (entry) => (
                 <tr
                   id={entry.node.getId()}
@@ -329,7 +329,7 @@ const Table = (props: any) => {
         {/* Modification buttons */}
         {selectedTarget.selectedRow !== null &&
         !isInputOn &&
-        state.getLength() > 0 ? (
+        data.getLength() > 0 ? (
           <div className="flex gap-2">
             <button className="btn btn-circle" onClick={removeRow}>
               <FontAwesomeIcon

@@ -1,4 +1,4 @@
-import Row from "src/row";
+import Row from "DataAPI/Row";
 
 it('Tests Row data structure', () => {
     const myRow = Row({});

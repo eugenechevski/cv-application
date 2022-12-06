@@ -1,20 +1,14 @@
 import uniqid from "uniqid";
 import { useState, createContext, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
-import IndexedLinkedList from "src/indexed-linked-list/IndexedLinkedList";
-import Row from "src/row";
-import Input from "./edit-page/Input";
-import List from "./edit-page/List";
-import Table from "./edit-page/Table";
+import IndexedLinkedList from "DataAPI/IndexedLinkedList";
+import Row from "DataAPI/Row";
+import Input from "Components/edit-page/Input";
+import List from "Components/edit-page/List";
+import Table from "Components/edit-page/Table";
 import { TemplateNameContext } from "src/App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-
-
-/**
- * TODO:
- *  Change the name of the props
- */
 
 const NavigationContext = createContext([() => {}, () => {}]);
 
@@ -28,8 +22,10 @@ const EditPage = () => {
    * States of associated fields that can be edited.
    */
 
-  const [name, updateName] = useState({current: "John Doe"});
-  const [title, updateTitle] = useState({current: "Lorem ipsum dolor sit amet"});
+  const [name, updateName] = useState({ current: "John Doe" });
+  const [title, updateTitle] = useState({
+    current: "Lorem ipsum dolor sit amet",
+  });
   const [skills, updateSkills] = useState(
     IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
@@ -79,7 +75,7 @@ const EditPage = () => {
       Name: (
         <EditField
           field={
-            <Input state={name} updateState={updateName} title={"Name"}></Input>
+            <Input data={name} updateData={updateName} title={"Name"}></Input>
           }
         ></EditField>
       ),
@@ -87,8 +83,8 @@ const EditPage = () => {
         <EditField
           field={
             <Input
-              state={title}
-              updateState={updateTitle}
+              data={title}
+              updateData={updateTitle}
               title={"Title"}
             ></Input>
           }
@@ -98,8 +94,8 @@ const EditPage = () => {
         <EditField
           field={
             <List
-              state={skills}
-              updateState={updateSkills}
+              data={skills}
+              updateData={updateSkills}
               title={"Skills"}
             ></List>
           }
@@ -109,8 +105,8 @@ const EditPage = () => {
         <EditField
           field={
             <Table
-              state={experience}
-              updateState={updateExperience}
+              data={experience}
+              updateData={updateExperience}
               title={"Experience"}
             ></Table>
           }
@@ -120,8 +116,8 @@ const EditPage = () => {
         <EditField
           field={
             <Table
-              state={education}
-              updateState={updateEducation}
+              data={education}
+              updateData={updateEducation}
               title={"Education"}
             ></Table>
           }
@@ -131,14 +127,14 @@ const EditPage = () => {
         <EditField
           field={
             <List
-              state={awards}
-              updateState={updateAwards}
+              data={awards}
+              updateData={updateAwards}
               title={"Awards"}
             ></List>
           }
         ></EditField>
       ),
-    }
+    };
 
     if (templateName !== "Simple") {
       componentsMap.current = Object.assign(componentsMap.current, {
@@ -146,8 +142,8 @@ const EditPage = () => {
           <EditField
             field={
               <List
-                state={projects}
-                updateState={updateProjects}
+                data={projects}
+                updateData={updateProjects}
                 title={"Projects"}
               ></List>
             }
@@ -157,8 +153,8 @@ const EditPage = () => {
           <EditField
             field={
               <List
-                state={languages}
-                updateState={updateLanguages}
+                data={languages}
+                updateData={updateLanguages}
                 title={"Languages"}
               ></List>
             }
@@ -304,28 +300,40 @@ const EditPage = () => {
         </NavigationContext.Provider>
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
-        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">Export</button>
+        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">
+          Export
+        </button>
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
         {window.screen.availWidth < 768 ? (
           <div className="dropdown dropdown-top w-1/2 dropdown-end">
             <div className="flex justify-center items-center gap-2">
-              <button className="btn btn-circle btn-secondary" onClick={() => selectPrevious()}>
+              <button
+                className="btn btn-circle btn-secondary"
+                onClick={() => selectPrevious()}
+              >
                 <FontAwesomeIcon
-                    className="text-4xl"
-                    icon={solid("arrow-left")}
+                  className="text-4xl"
+                  icon={solid("arrow-left")}
                 ></FontAwesomeIcon>
               </button>
-              <label tabIndex={0} className="btn btn-primary w-full">{currentComponent.props.field.props.title}</label>
-              <button className="btn btn-circle btn-secondary" onClick={() => selectNext()}>
+              <label tabIndex={0} className="btn btn-primary w-full">
+                {currentComponent.props.field.props.title}
+              </label>
+              <button
+                className="btn btn-circle btn-secondary"
+                onClick={() => selectNext()}
+              >
                 <FontAwesomeIcon
-                    className="text-4xl"
-                    icon={solid("arrow-right")}
+                  className="text-4xl"
+                  icon={solid("arrow-right")}
                 ></FontAwesomeIcon>
               </button>
             </div>
             <ul tabIndex={0} className="dropdown-content menu rounded-box">
-              {navigationButtons.current.map(buttonEl => <li key={uniqid()}>{buttonEl}</li>)}
+              {navigationButtons.current.map((buttonEl) => (
+                <li key={uniqid()}>{buttonEl}</li>
+              ))}
             </ul>
           </div>
         ) : (
