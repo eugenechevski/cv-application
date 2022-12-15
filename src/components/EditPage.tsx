@@ -9,6 +9,7 @@ import Table from "Components/edit-page/Table";
 import { TemplateNameContext } from "src/App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import exportResume from "Helpers/exportResume";
 
 const NavigationContext = createContext([() => {}, () => {}]);
 
@@ -136,7 +137,7 @@ const EditPage = () => {
       ),
     };
 
-    if (templateName !== "Simple") {
+    if (templateName === "Simple") {
       componentsMap.current = Object.assign(componentsMap.current, {
         Projects: (
           <EditField
@@ -300,9 +301,17 @@ const EditPage = () => {
         </NavigationContext.Provider>
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
-        <button className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3">
+        <a
+          id="exportBtn"
+          className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3"
+          onClick={() =>
+            exportResume(templateName as string, {})
+          }
+          href="#"
+          download={`Creative_Resume.pdf`}
+        >
           Export
-        </button>
+        </a>
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
         {window.screen.availWidth < 768 ? (

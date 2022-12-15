@@ -3,6 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState, useCallback } from "react";
 
+/**
+ * TODO:
+ *  change max length of input
+ * 
+ */
+
 const List = (props: any) => {
   const data: IndexedLinkedList<string> = props.data;
   const updateData: (newData: IndexedLinkedList<string>) => void =

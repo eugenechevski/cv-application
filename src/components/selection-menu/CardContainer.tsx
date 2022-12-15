@@ -42,7 +42,7 @@ const CardContainer = (props: any) => {
   const { updateScene } = props;
   const [selectedCard, setSelectedCard] = useState("");
   const [wasPreviewed, setAsPreviewed] = useState(false);
-  const [templateName, updateTemplateName] = useContext(TemplateNameContext);
+  const [, updateTemplateName] = useContext(TemplateNameContext);
 
   const cardsComps = useRef({
     Simple: <Card data={cardsData[0]}></Card>,
