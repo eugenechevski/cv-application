@@ -30,6 +30,11 @@ const EditPage = () => {
   const [skills, updateSkills] = useState(
     IndexedLinkedList(["Skill 1", "Skill 2", "Skill 3"])
   );
+  const [street, updateStreet] = useState({ current: "123 Your Street" });
+  const [city, updateCity] = useState({ current: "Your City" });
+  const [zip, updateZip] = useState({ current: "MA 12345"});
+  const [phone, updatePhone] = useState({ current: "(123) 456-7890"});
+  const [email, updateEmail] = useState({ current: "no_reply@example.com"});
 
   const [experience, updateExperience] = useState(
     IndexedLinkedList([
@@ -87,6 +92,61 @@ const EditPage = () => {
               data={title}
               updateData={updateTitle}
               title={"Title"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      Street: (
+        <EditField
+          field={
+            <Input
+              data={street}
+              updateData={updateStreet}
+              title={"Street"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      City: (
+        <EditField
+          field={
+            <Input
+              data={city}
+              updateData={updateCity}
+              title={"City"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      Zip: (
+        <EditField
+          field={
+            <Input
+              data={zip}
+              updateData={updateZip}
+              title={"Zip"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      Phone: (
+        <EditField
+          field={
+            <Input
+              data={phone}
+              updateData={updatePhone}
+              title={"Phone"}
+            ></Input>
+          }
+        ></EditField>
+      ),
+      Email: (
+        <EditField
+          field={
+            <Input
+              data={email}
+              updateData={updateEmail}
+              title={"Email"}
             ></Input>
           }
         ></EditField>
@@ -314,8 +374,7 @@ const EditPage = () => {
         </a>
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
-        {window.screen.availWidth < 768 ? (
-          <div className="dropdown dropdown-top w-1/2 dropdown-end">
+          <div className="dropdown dropdown-top w-1/2">
             <div className="flex justify-center items-center gap-2">
               <button
                 className="btn btn-circle btn-secondary"
@@ -326,7 +385,7 @@ const EditPage = () => {
                   icon={solid("arrow-left")}
                 ></FontAwesomeIcon>
               </button>
-              <label tabIndex={0} className="btn btn-primary w-full">
+              <label tabIndex={0} className="btn btn-primary w-full md:w-1/2">
                 {currentComponent.props.field.props.title}
               </label>
               <button
@@ -345,11 +404,6 @@ const EditPage = () => {
               ))}
             </ul>
           </div>
-        ) : (
-          <div className="pagination items-end">
-            <div className="btn-group">{navigationButtons.current}</div>
-          </div>
-        )}
       </div>
     </div>
   );
