@@ -10,6 +10,7 @@ import { TemplateNameContext } from "src/App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import exportResume from "Helpers/exportResume";
+import convertData from "Helpers/convertData";
 
 const NavigationContext = createContext([() => {}, () => {}]);
 
@@ -69,6 +70,24 @@ const EditPage = () => {
   const [languages, updateLanguages] = useState(
     IndexedLinkedList(["Language 1", "Language 2", "Language 3"])
   );
+
+  const getAllData: () => RawData = () => {
+    return {
+      name,
+      title,
+      skills,
+      awards,
+      street,
+      city,
+      zip,
+      phone,
+      email,
+      experience,
+      education,
+      projects,
+      languages
+    }
+  };
 
   /**
    * Contains an object with the name of an editing field as a key and
@@ -365,10 +384,10 @@ const EditPage = () => {
           id="exportBtn"
           className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3"
           onClick={() =>
-            exportResume(templateName as string, {})
+            exportResume(templateName as string, convertData(getAllData()))
           }
           href="#"
-          download={`Creative_Resume.pdf`}
+          download={`${templateName}_Resume.pdf`}
         >
           Export
         </a>

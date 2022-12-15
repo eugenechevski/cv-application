@@ -5,8 +5,8 @@ async function getExistingBytes(templateName: string): Promise<ArrayBuffer> {
     return await fetch(url).then((res) => res.arrayBuffer());
 }
 
-function editFields(form: PDFForm, data: any): void {
-    // TODO
+function editFields(form: PDFForm, data: BasicResume | ExtendedResume): void {
+    form.getTextField()
 }
 
 async function triggerDownload(targetDoc: PDFDocument): Promise<void> {
@@ -24,7 +24,7 @@ async function triggerDownload(targetDoc: PDFDocument): Promise<void> {
     document.getElementById('exportBtn').click();
 }
 
-export default async function exportResume(templateName: string, data: any): Promise<void> {
+export default async function exportResume(templateName: string, data: BasicResume | ExtendedResume): Promise<void> {
     // Fetch bytes
     const existingBytes = await getExistingBytes(templateName);
     

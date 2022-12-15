@@ -33,3 +33,42 @@ declare type Row = {
     editField: (fieldName: string, newValue?: string) => boolean,
     createNewInstance: () => Row,
 }
+
+declare type Experience = {
+    companyName: string,
+    jobTitle: string,
+    dateFrom: string,
+    dateTo: string,
+    location: string,
+    description: string,
+}
+
+declare type Education = {
+    schoolName: string,
+    degree: string,
+    dateFrom: string,
+    dateTo: string,
+    location: string,
+    description: string,
+}
+
+declare type BasicResume = {
+    name: string,
+    title: string,
+    street: string,
+    city: string,
+    zip: string,
+    phone: string,
+    email: string,
+    skills: string[],
+    awards: string[],
+    experience: Experience[],
+    education: Education[],
+}
+
+declare type ExtendedResume = BasicResume & {
+    projects: string[],
+    languages: string[],
+}
+
+declare type RawData = {[index: string]: { current: string } | IndexedLinkedList<string> | IndexedLinkedList<Row>}
