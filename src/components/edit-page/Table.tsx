@@ -112,35 +112,6 @@ const Table = (props: any) => {
     setSelectedTarget(newTarget);
   };
 
-  const validateText = (
-    field: string,
-    target: HTMLInputElement,
-    newInput: string,
-    minChars?: number,
-    maxChars?: number
-  ): void => {
-    const fieldFormatted = field
-      .split(/(?<=[a-z])\.?(?=[A-Z])/)
-      .map((s: string) => s.toLowerCase())
-      .join(" ");
-
-    if (minChars !== undefined && newInput.length === minChars) {
-      setValidity(false);
-      setNewInput(newInput);
-      target.setCustomValidity(
-        `The length of a ${fieldFormatted} cannot be less than ${minChars + 1}.`
-      );
-    } else if (maxChars !== undefined && newInput.length > maxChars) {
-      setValidity(false);
-      target.setCustomValidity(
-        `The length of a ${fieldFormatted} cannot be greater than ${maxChars}.`
-      );
-    } else {
-      setValidity(true);
-      setNewInput(newInput);
-    }
-  };
-
   const getDates = (
     field: string,
     inputDate: string
@@ -186,19 +157,11 @@ const Table = (props: any) => {
     const newInput = target.value;
     let field = selectedTarget.selectedField;
     field = field.slice(0, field.indexOf("-"));
-
-    if (
-      field === "companyName" ||
-      field === "jobTitle" ||
-      field === "location" ||
-      field === "schoolName" ||
-      field === "degree"
-    ) {
-      validateText(field, target, newInput, 0, 30);
-    } else if (field === "dateFrom" || field === "dateTo") {
+    
+    if (field === "dateFrom" || field === "dateTo") {
       validateDate(field, newInput, target);
-    } else if (field === "description") {
-      validateText(field, target, newInput, 0, 100);
+    } else {
+      setNewInput(newInput);
     }
   };
 
