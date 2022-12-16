@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { useState, useCallback, useRef, useEffect } from "react";
 import LinkedNode from "DataAPI/LinkedNode";
+import getDateFromString from "Helpers/getDateFromString";
 
 const Table = (props: any) => {
   /**
@@ -65,10 +66,12 @@ const Table = (props: any) => {
   };
 
   const addRow = () => {
-    if (data.getLength() < 10) {
-      data.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
-      updateAllStates();
+    if (data.getLength() === 3) {
+      return;
     }
+
+    data.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
+    updateAllStates();
   };
 
   const removeRow = () => {
@@ -151,19 +154,7 @@ const Table = (props: any) => {
         ? inputDate
         : selectedTarget.selectedRow.getValue().getFieldValue("dateTo");
 
-    const [yearFrom, monthFrom, dayFrom] = dateFromData
-      .split("-")
-      .map((t: string) => Number(t));
-    const dateFrom = new Date();
-    dateFrom.setFullYear(yearFrom, monthFrom - 1, dayFrom);
-
-    const [yearTo, monthTo, dayTo] = dateToData
-      .split("-")
-      .map((t: string) => Number(t));
-    const dateTo = new Date();
-    dateTo.setFullYear(yearTo, monthTo - 1, dayTo);
-
-    return [dateFrom, dateTo];
+    return [getDateFromString(dateFromData), getDateFromString(dateToData)];
   };
 
   const validateDate = (

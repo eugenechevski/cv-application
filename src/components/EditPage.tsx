@@ -33,9 +33,9 @@ const EditPage = () => {
   );
   const [street, updateStreet] = useState({ current: "123 Your Street" });
   const [city, updateCity] = useState({ current: "Your City" });
-  const [zip, updateZip] = useState({ current: "MA 12345"});
-  const [phone, updatePhone] = useState({ current: "(123) 456-7890"});
-  const [email, updateEmail] = useState({ current: "no_reply@example.com"});
+  const [zip, updateZip] = useState({ current: "MA 12345" });
+  const [phone, updatePhone] = useState({ current: "(123) 456-7890" });
+  const [email, updateEmail] = useState({ current: "no_reply@example.com" });
 
   const [experience, updateExperience] = useState(
     IndexedLinkedList([
@@ -85,8 +85,8 @@ const EditPage = () => {
       experience,
       education,
       projects,
-      languages
-    }
+      languages,
+    };
   };
 
   /**
@@ -129,22 +129,14 @@ const EditPage = () => {
       City: (
         <EditField
           field={
-            <Input
-              data={city}
-              updateData={updateCity}
-              title={"City"}
-            ></Input>
+            <Input data={city} updateData={updateCity} title={"City"}></Input>
           }
         ></EditField>
       ),
       Zip: (
         <EditField
           field={
-            <Input
-              data={zip}
-              updateData={updateZip}
-              title={"Zip"}
-            ></Input>
+            <Input data={zip} updateData={updateZip} title={"Zip"}></Input>
           }
         ></EditField>
       ),
@@ -380,49 +372,46 @@ const EditPage = () => {
         </NavigationContext.Provider>
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
-        <a
-          id="exportBtn"
+        <button
           className="btn btn-primary w-2/3 sm:w-1/2 lg:w-1/3"
           onClick={() =>
             exportResume(templateName as string, convertData(getAllData()))
           }
-          href="#"
-          download={`${templateName}_Resume.pdf`}
         >
           Export
-        </a>
+        </button>
       </div>
       <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
-          <div className="dropdown dropdown-top w-1/2">
-            <div className="flex justify-center items-center gap-2">
-              <button
-                className="btn btn-circle btn-secondary"
-                onClick={() => selectPrevious()}
-              >
-                <FontAwesomeIcon
-                  className="text-4xl"
-                  icon={solid("arrow-left")}
-                ></FontAwesomeIcon>
-              </button>
-              <label tabIndex={0} className="btn btn-primary w-full md:w-1/2">
-                {currentComponent.props.field.props.title}
-              </label>
-              <button
-                className="btn btn-circle btn-secondary"
-                onClick={() => selectNext()}
-              >
-                <FontAwesomeIcon
-                  className="text-4xl"
-                  icon={solid("arrow-right")}
-                ></FontAwesomeIcon>
-              </button>
-            </div>
-            <ul tabIndex={0} className="dropdown-content menu rounded-box">
-              {navigationButtons.current.map((buttonEl) => (
-                <li key={uniqid()}>{buttonEl}</li>
-              ))}
-            </ul>
+        <div className="dropdown dropdown-top w-1/2">
+          <div className="flex justify-center items-center gap-2">
+            <button
+              className="btn btn-circle btn-secondary"
+              onClick={() => selectPrevious()}
+            >
+              <FontAwesomeIcon
+                className="text-4xl"
+                icon={solid("arrow-left")}
+              ></FontAwesomeIcon>
+            </button>
+            <label tabIndex={0} className="btn btn-primary w-full md:w-1/2">
+              {currentComponent.props.field.props.title}
+            </label>
+            <button
+              className="btn btn-circle btn-secondary"
+              onClick={() => selectNext()}
+            >
+              <FontAwesomeIcon
+                className="text-4xl"
+                icon={solid("arrow-right")}
+              ></FontAwesomeIcon>
+            </button>
           </div>
+          <ul tabIndex={0} className="dropdown-content menu rounded-box">
+            {navigationButtons.current.map((buttonEl) => (
+              <li key={uniqid()}>{buttonEl}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
