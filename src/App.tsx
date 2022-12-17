@@ -1,7 +1,7 @@
 import { useState, createContext, useRef } from "react";
 import LandingPage from "Components/LandingPage";
 import SelectionMenu from "Components/SelectionMenu";
-import { EditPage } from "Components/EditPage";
+import EditPage from "Components/EditPage";
 import "src/styles/App.css";
 
 const TemplateNameContext = createContext(['',  (any) => {}]);

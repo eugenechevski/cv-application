@@ -13,6 +13,7 @@ const Table = (props: any) => {
   const updateData: (newState: IndexedLinkedList<Row>) => void =
     props.updateData;
   const title: string = props.title;
+  const maxItems = props.maxItems as number;
 
   /**
    * The prototype of a row is required for creating new instances.
@@ -66,12 +67,10 @@ const Table = (props: any) => {
   };
 
   const addRow = () => {
-    if (data.getLength() === 3) {
-      return;
+    if (data.getLength() < maxItems) {
+      data.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
+      updateAllStates();
     }
-
-    data.appendNode(LinkedNode(rowPrototype.current.createNewInstance()));
-    updateAllStates();
   };
 
   const removeRow = () => {
@@ -178,7 +177,7 @@ const Table = (props: any) => {
       </h1>
       <div className="overflow-scroll h-4/6 w-full">
         {/* Table */}
-        <table className="table text-xs border border-neutral h-full w-full">
+        <table className="table text-xs h-full w-full">
           <thead>
             <tr>
               <th></th>
@@ -213,7 +212,7 @@ const Table = (props: any) => {
                           className={
                             (field + "-" + entry.node.getId() ===
                             selectedTarget.selectedField
-                              ? "bg-accent"
+                              ? "bg-accent-content"
                               : "") +
                             " whitespace-normal cursor-pointer border-l border-l-neutral"
                           }
@@ -243,7 +242,7 @@ const Table = (props: any) => {
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col justify-center items-center border-t border-neutral p-2 h-1/6">
+      <div className="flex flex-col justify-center items-center p-2 h-1/6 mt-3">
         {/* Input container */}
         {isInputOn ? (
           <div className="flex justify-center gap-2">

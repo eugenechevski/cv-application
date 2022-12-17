@@ -1,5 +1,5 @@
 import uniqid from "uniqid";
-import { useState, createContext, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import EditField from "Components/edit-page/EditField";
 import IndexedLinkedList from "DataAPI/IndexedLinkedList";
 import Row from "DataAPI/Row";
@@ -12,8 +12,6 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import exportResume from "Helpers/exportResume";
 import convertData from "Helpers/convertData";
 
-const NavigationContext = createContext([() => {}, () => {}]);
-
 const EditPage = () => {
   /**
    * Name of a resume's template
@@ -21,7 +19,7 @@ const EditPage = () => {
   const [templateName] = useContext(TemplateNameContext);
 
   /**
-   * States of associated fields that can be edited.
+   * Containers for underlying data of fields.
    */
 
   const [name, updateName] = useState({ current: "John Doe" });
@@ -180,6 +178,7 @@ const EditPage = () => {
               data={experience}
               updateData={updateExperience}
               title={"Experience"}
+              maxItems={3}
             ></Table>
           }
         ></EditField>
@@ -191,6 +190,13 @@ const EditPage = () => {
               data={education}
               updateData={updateEducation}
               title={"Education"}
+              maxItems={
+                templateName === "Professional"
+                  ? 1
+                  : templateName === "Simple"
+                  ? 2
+                  : 3
+              }
             ></Table>
           }
         ></EditField>
@@ -331,7 +337,7 @@ const EditPage = () => {
         <button
           id={`${componentName}NavBtn`}
           key={uniqid()}
-          className="btn text-sm"
+          className="btn btn-secondary border border-black text-sm"
           onClick={() =>
             syncNavigationState(
               componentsMap.current[componentName] as JSX.Element
@@ -367,9 +373,7 @@ const EditPage = () => {
   return (
     <div className="flex flex-col justify-center h-full w-full">
       <div className="basis-2/3 flex justify-center items-center h-2/3">
-        <NavigationContext.Provider value={[selectPrevious, selectNext]}>
-          {currentComponent}
-        </NavigationContext.Provider>
+        {currentComponent}
       </div>
       <div className="basis-1/6 flex flex-col justify-center items-center gap-3 h-1/6">
         <button
@@ -381,40 +385,38 @@ const EditPage = () => {
           Export
         </button>
       </div>
-      <div className="basis-1/6 flex justify-center items-center h-1/6 w-full">
-        <div className="dropdown dropdown-top w-1/2">
-          <div className="flex justify-center items-center gap-2">
-            <button
-              className="btn btn-circle btn-secondary"
-              onClick={() => selectPrevious()}
-            >
-              <FontAwesomeIcon
-                className="text-4xl"
-                icon={solid("arrow-left")}
-              ></FontAwesomeIcon>
-            </button>
-            <label tabIndex={0} className="btn btn-primary w-full md:w-1/2">
-              {currentComponent.props.field.props.title}
-            </label>
-            <button
-              className="btn btn-circle btn-secondary"
-              onClick={() => selectNext()}
-            >
-              <FontAwesomeIcon
-                className="text-4xl"
-                icon={solid("arrow-right")}
-              ></FontAwesomeIcon>
-            </button>
-          </div>
+      <div className="basis-1/6 flex justify-center items-center gap-3 h-1/6 w-full">
+        <button
+          className="btn btn-circle btn-secondary"
+          onClick={() => selectPrevious()}
+        >
+          <FontAwesomeIcon
+            className="text-4xl"
+            icon={solid("arrow-left")}
+          ></FontAwesomeIcon>
+        </button>
+        <div className="dropdown dropdown-top w-1/2 md:w-1/3">
+          <label tabIndex={0} className="btn btn-primary w-full">
+            {currentComponent.props.field.props.title}
+          </label>
           <ul tabIndex={0} className="dropdown-content menu rounded-box">
             {navigationButtons.current.map((buttonEl) => (
               <li key={uniqid()}>{buttonEl}</li>
             ))}
           </ul>
         </div>
+        <button
+          className="btn btn-circle btn-secondary"
+          onClick={() => selectNext()}
+        >
+          <FontAwesomeIcon
+            className="text-4xl"
+            icon={solid("arrow-right")}
+          ></FontAwesomeIcon>
+        </button>
       </div>
     </div>
   );
 };
 
-export { EditPage, NavigationContext };
+export default EditPage;

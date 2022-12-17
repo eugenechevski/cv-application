@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import requestQuote from "Helpers/quoteRequester";
+import requestQuote from "Helpers/requestQuote";
 
 const LandingPage = (props: any) => {
   const { updateScene } = props;

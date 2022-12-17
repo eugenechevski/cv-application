@@ -1,4 +1,3 @@
-import { useState } from "react";
 import uniqid from "uniqid";
 
 const Input = (props: any) => {
